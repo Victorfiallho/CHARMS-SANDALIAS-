@@ -1,0 +1,7 @@
+{
+  "buildCommand": "npm --workspace @charms/web run build",
+  "outputDirectory": "apps/web/.next",
+  "installCommand": "npm ci",
+  "framework": "nextjs",
+  "rewrites": [{ "source": "/(.*)", "destination": "/$1" }]
+}

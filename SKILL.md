@@ -213,7 +213,56 @@ No nosso stack TypeScript/Fastify: `@fastify/swagger` + `@fastify/swagger-ui` �
 
 ---
 
-## 9. Anti-padrões deste projeto (NÃO faça)
+## 9. UI/UX — sistema de design
+
+### Stack de UI
+- **Tailwind CSS v4** em `apps/web`. Configuração via CSS, sem `tailwind.config.js`.
+- **PostCSS** via `@tailwindcss/postcss` (arquivo: `apps/web/postcss.config.mjs`).
+
+### Design tokens — a fonte da verdade visual
+**Arquivo único:** `apps/web/app/globals.css` bloco `@theme`.
+
+Toda cor, raio de borda e fonte do painel nasce dali. Para mudar a identidade visual:
+1. Edite apenas o bloco `@theme` em `globals.css`.
+2. Nunca coloque valores de cor ou fonte hardcoded nos componentes — use as variáveis `var(--color-*)`.
+3. Tokens de status de pipeline: `--color-status-novo`, `--color-status-qualificado`, etc. Mudar ali muda em todo o Kanban.
+
+```css
+/* Exemplo: trocar a cor principal da marca */
+@theme {
+  --color-brand-500: oklch(0.62 0.22 30); /* muda de azul para coral */
+}
+```
+
+### Regras de componente
+- **Server Components** por padrão. Adicione `"use client"` só quando precisar de estado/eventos.
+- **CSS classes** para estilos reutilizáveis (`.kanban-card`, `.badge`, etc.). `style={}` inline só para valores dinâmicos (ex: cor do status que vem do banco).
+- **Nunca use `!important`**. Se precisou, o seletor está errado.
+- Tailwind utility classes são bem-vindas para one-offs (ex: `mt-2 text-sm`). Para padrões que se repetem 3+ vezes → extrai para classe CSS.
+
+### Estrutura de componentes
+```
+apps/web/app/
+├── dashboard/
+│   ├── components/       ← componentes específicos do dashboard
+│   │   ├── KanbanBoard.tsx
+│   │   └── ConversationView.tsx
+│   └── ...
+└── components/           ← componentes globais reutilizáveis (futuros)
+    ├── Button.tsx
+    ├── Badge.tsx
+    └── ...
+```
+
+### Anti-padrões de UI (NÃO faça)
+- ❌ Hardcodar `#3b82f6` em componente — use `var(--color-brand-500)` ou classe Tailwind.
+- ❌ Criar arquivo CSS por componente sem necessidade — Tailwind + globals.css bastam.
+- ❌ Instalar biblioteca de componentes inteira (MUI, Chakra) por um botão — use Tailwind.
+- ❌ `style={{ color: 'red' }}` para estados de erro — crie uma classe `.text-error`.
+
+---
+
+## 10. Anti-padrões deste projeto (NÃO faça)
 
 - ❌ Orquestração em fluxo visual (N8N) — toda lógica é código.
 - ❌ Processar webhook na request HTTP — enfileira e responde 200.

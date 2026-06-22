@@ -1,25 +1,82 @@
-:root {
-  color-scheme: light;
-  font-family: Inter, system-ui, sans-serif;
-  background: #f8fafc;
-  color: #0f172a;
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════════
+   DESIGN TOKENS — Charms Sandálias
+   Mude aqui para atualizar a identidade visual do painel inteiro.
+   Documentação: SKILL.md § UI/UX
+   ═══════════════════════════════════════════════════════════════════ */
+@theme {
+  /* Marca */
+  --color-brand-50: oklch(0.97 0.01 260);
+  --color-brand-100: oklch(0.93 0.03 260);
+  --color-brand-500: oklch(0.62 0.19 260);   /* azul principal */
+  --color-brand-600: oklch(0.55 0.19 260);
+  --color-brand-700: oklch(0.48 0.19 260);
+
+  /* Superfícies */
+  --color-surface: oklch(0.98 0 0);          /* fundo geral */
+  --color-surface-raised: oklch(1 0 0);      /* cards, modais */
+  --color-surface-subtle: oklch(0.95 0 0);   /* fundos de coluna, input */
+
+  /* Texto */
+  --color-text-primary: oklch(0.13 0.02 260);
+  --color-text-secondary: oklch(0.45 0.01 260);
+  --color-text-muted: oklch(0.62 0.01 260);
+
+  /* Sidebar */
+  --color-sidebar: oklch(0.13 0.03 260);
+  --color-sidebar-item: oklch(0.45 0.02 260);
+  --color-sidebar-item-hover: oklch(0.20 0.03 260);
+
+  /* Bordas */
+  --color-border: oklch(0.90 0 0);
+  --color-border-focus: var(--color-brand-500);
+
+  /* Status de pipeline */
+  --color-status-novo: oklch(0.62 0.19 260);          /* azul */
+  --color-status-qualificado: oklch(0.72 0.15 80);    /* âmbar */
+  --color-status-negociacao: oklch(0.68 0.18 50);     /* laranja */
+  --color-status-fechamento: oklch(0.62 0.17 145);    /* verde */
+  --color-status-pos-venda: oklch(0.62 0.18 300);     /* roxo */
+
+  /* Canais */
+  --color-whatsapp: oklch(0.55 0.16 145);
+  --color-instagram: oklch(0.55 0.18 340);
+
+  /* Tipografia */
+  --font-sans: Inter, system-ui, sans-serif;
+
+  /* Raios */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-full: 9999px;
 }
 
-* {
+/* ═══════════════════════════════════════════════════════════════════
+   BASE
+   ═══════════════════════════════════════════════════════════════════ */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+}
+
+html {
+  color-scheme: light;
 }
 
 body {
   margin: 0;
+  font-family: var(--font-sans);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
 }
 
-main {
-  max-width: 980px;
-  margin: 0 auto;
-  padding: 3rem 1.5rem;
-}
-
-/* ── Dashboard layout ───────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════
+   LAYOUT DO DASHBOARD
+   ═══════════════════════════════════════════════════════════════════ */
 .dashboard-layout {
   display: flex;
   height: 100vh;
@@ -28,7 +85,7 @@ main {
 
 .sidebar {
   width: 220px;
-  background: #0f172a;
+  background: var(--color-sidebar);
   padding: 1.5rem 1rem;
   display: flex;
   flex-direction: column;
@@ -45,49 +102,53 @@ main {
 .nav-link {
   display: block;
   padding: 0.6rem 0.75rem;
-  border-radius: 6px;
-  color: #94a3b8;
+  border-radius: var(--radius-md);
+  color: var(--color-sidebar-item);
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   transition: background 0.15s, color 0.15s;
 }
 
-.nav-link:hover {
-  background: #1e293b;
+.nav-link:hover,
+.nav-link.active {
+  background: var(--color-sidebar-item-hover);
   color: white;
 }
 
-/* ── Kanban ─────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════
+   KANBAN
+   ═══════════════════════════════════════════════════════════════════ */
 .kanban-board {
   display: flex;
   gap: 1rem;
   padding: 1.5rem;
   overflow-x: auto;
-  min-height: calc(100vh - 57px);
-  background: #f1f5f9;
   align-items: flex-start;
+  background: var(--color-surface-subtle);
+  min-height: 100%;
 }
 
 .kanban-column {
   width: 280px;
   flex-shrink: 0;
-  background: #e2e8f0;
-  border-radius: 8px;
+  background: var(--color-border);
+  border-radius: var(--radius-lg);
   padding: 1rem;
-  transition: background 0.15s;
+  transition: background 0.15s, outline 0.15s;
   min-height: 120px;
 }
 
 .kanban-column.drag-over {
-  background: #dbeafe;
-  outline: 2px dashed #3b82f6;
+  background: var(--color-brand-100);
+  outline: 2px dashed var(--color-brand-500);
+  outline-offset: -2px;
 }
 
 .kanban-column-header {
   font-weight: 600;
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   margin-bottom: 0.75rem;
   display: flex;
   align-items: center;
@@ -95,20 +156,20 @@ main {
 }
 
 .kanban-card {
-  background: white;
-  border-radius: 6px;
+  background: var(--color-surface-raised);
+  border-radius: var(--radius-md);
   padding: 0.75rem;
   margin-bottom: 0.5rem;
   cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
   border: 2px solid transparent;
   transition: box-shadow 0.15s, border-color 0.15s;
   user-select: none;
 }
 
 .kanban-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.12);
+  border-color: var(--color-brand-500);
 }
 
 .kanban-card.dragging {
@@ -116,24 +177,26 @@ main {
   cursor: grabbing;
 }
 
-/* ── Badges ─────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════
+   BADGES
+   ═══════════════════════════════════════════════════════════════════ */
 .badge {
   display: inline-flex;
   align-items: center;
   padding: 0.15rem 0.45rem;
-  border-radius: 4px;
-  font-size: 0.7rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.05em;
 }
 
 .badge-whatsapp {
-  background: #dcfce7;
-  color: #15803d;
+  background: oklch(from var(--color-whatsapp) l c h / 0.12);
+  color: var(--color-whatsapp);
 }
 
 .badge-instagram {
-  background: #fce7f3;
-  color: #9d174d;
+  background: oklch(from var(--color-instagram) l c h / 0.12);
+  color: var(--color-instagram);
 }

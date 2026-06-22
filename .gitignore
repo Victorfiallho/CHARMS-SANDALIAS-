@@ -1,0 +1,23 @@
+node_modules
+.DS_Store
+.env*
+!.env.example
+.vscode
+.next
+out
+dist
+coverage
+*.tsbuildinfo
+# Artefatos de compilação TS que caem na pasta source
+apps/worker/src/*.js
+apps/worker/src/*.js.map
+packages/*/src/*.js
+packages/*/src/*.js.map
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp.*
+.vscode-test
+**/package-lock.json
+**/pnpm-lock.yaml
+**/yarn.lock

@@ -1,0 +1,26 @@
+{
+  "name": "charmssandalias",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "bootstrap": "npm install",
+    "dev:web": "npm --workspace @charms/web run dev",
+    "dev:worker": "npm --workspace @charms/worker run dev",
+    "build": "npm run build --workspaces",
+    "lint": "eslint . --ext .ts,.tsx",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.3",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.8.4",
+    "typescript": "^5.6.2"
+  },
+  "dependencies": {
+    "zod": "^3.23.2"
+  }
+}

@@ -7,11 +7,14 @@
   ],
   "scripts": {
     "bootstrap": "npm install",
+    "dev": "concurrently -n worker,web -c cyan,green \"npm run dev:worker\" \"npm run dev:web\"",
     "dev:web": "npm --workspace @charms/web run dev",
     "dev:worker": "npm --workspace @charms/worker run dev",
     "build": "npm run build --workspaces",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier --write .",
+    "seed": "ts-node -P scripts/tsconfig.json -r tsconfig-paths/register scripts/seed-demo.ts",
+    "seed:clean": "ts-node -P scripts/tsconfig.json -r tsconfig-paths/register scripts/seed-demo.ts --clean",
     "migrate:kommo": "ts-node -P scripts/tsconfig.json -r tsconfig-paths/register scripts/migrate-kommo.ts"
   },
   "devDependencies": {

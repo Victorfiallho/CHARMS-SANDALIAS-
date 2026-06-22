@@ -1,5 +1,9 @@
 -- Supabase schema inicial para o CRM omnichannel
 
+-- Extensão necessária para a coluna embedding (Fase 2 — bot RAG)
+-- No Supabase: Database → Extensions → procure "vector" e ative antes de rodar este SQL
+create extension if not exists vector;
+
 create table if not exists contacts (
   id uuid primary key default gen_random_uuid(),
   nome text not null,

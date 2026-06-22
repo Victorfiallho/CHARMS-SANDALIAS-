@@ -1,17 +1,17 @@
-import { loadEnvConfig } from "@next/env";
+import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 
-// Next.js procura .env.local na pasta apps/web/, mas nosso arquivo fica na raiz do monorepo.
-// Isso carrega o .env.local da raiz antes de qualquer coisa.
-const webDir = path.dirname(fileURLToPath(import.meta.url)); // apps/web/
-const rootDir = path.resolve(webDir, "../.."); // CharmsSandalias/
-loadEnvConfig(rootDir);
+const webDir = path.dirname(fileURLToPath(import.meta.url));
+const rootDir = path.resolve(webDir, "../..");
+
+// Carrega o .env.local da raiz do monorepo antes do Next.js resetar o process.env
+dotenv.config({ path: path.join(rootDir, ".env.local") });
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ["@charms/db", "@charms/types", "@charms/integrations"],
+  transpilePackages: ["@charms/integrations"],
 };
 
 export default nextConfig;

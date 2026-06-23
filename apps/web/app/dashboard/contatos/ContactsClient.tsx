@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback } from "react";
 import ConversationView from "../components/ConversationView";
 import NovoContatoModal from "../components/NovoContatoModal";
+import Toast from "../components/Toast";
 
 type Contact = {
   id: string;
@@ -17,11 +18,11 @@ type Contact = {
 };
 
 const STATUS_COLOR: Record<string, string> = {
-  novo:        "#64748b",
-  qualificado: "#3b82f6",
-  negociacao:  "#f59e0b",
-  fechamento:  "#10b981",
-  "pos-venda": "#8b5cf6",
+  novo:        "#6B7280",
+  qualificado: "#1D4ED8",
+  negociacao:  "#A16207",
+  fechamento:  "#15803D",
+  "pos-venda": "#374151",
 };
 
 const STATUS_LABEL: Record<string, string> = {
@@ -41,21 +42,21 @@ function timeAgo(iso: string | null) {
   if (!iso) return "—";
   const h = Math.floor((Date.now() - new Date(iso).getTime()) / 3_600_000);
   if (h < 1) return "agora";
-  if (h < 24) return `${h}h atrás`;
-  return `${Math.floor(h / 24)}d atrás`;
+  if (h < 24) return `${h}h`;
+  return `${Math.floor(h / 24)}d`;
 }
 
-function Avatar({ nome, size = 32 }: { nome: string; size?: number }) {
+function Initials({ nome }: { nome: string }) {
   const words = nome.trim().split(/\s+/);
   const initials = (words[0]?.[0] ?? "") + (words[1]?.[0] ?? "");
   const hue = (nome.charCodeAt(0) * 47 + nome.charCodeAt(nome.length - 1) * 23) % 360;
   return (
     <div style={{
-      width: size, height: size, borderRadius: "50%",
-      background: `hsl(${hue},55%,50%)`,
-      color: "white", fontWeight: 700, fontSize: size * 0.35,
+      width: 26, height: 26, borderRadius: 4,
+      background: `hsl(${hue},40%,45%)`,
+      color: "white", fontWeight: 700, fontSize: "0.6rem",
       display: "flex", alignItems: "center", justifyContent: "center",
-      flexShrink: 0,
+      flexShrink: 0, letterSpacing: "-0.5px",
     }}>
       {initials.toUpperCase()}
     </div>
@@ -73,6 +74,7 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
   const [statusFilter, setStatusFilter] = useState("todos");
   const [selected, setSelected] = useState<Contact | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type?: "success" | "error" } | null>(null);
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
@@ -97,56 +99,65 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
 
   const handleCreated = useCallback((contact: Contact) => {
     setContacts((prev) => [contact, ...prev]);
+    setToast({ message: `${contact.nome} adicionado com sucesso` });
   }, []);
 
   return (
     <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-        {/* Filters bar */}
-        <div style={{ background: "white", borderBottom: "1px solid #e2e8f0", padding: "0.75rem 1.5rem", display: "flex", gap: "0.75rem", alignItems: "center", flexShrink: 0 }}>
-          {/* Search */}
-          <div style={{ position: "relative", flex: "0 0 260px" }}>
-            <svg style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }} width="15" height="15" viewBox="0 0 20 20" fill="currentColor">
+
+        {/* Toolbar */}
+        <div style={{
+          background: "white", borderBottom: "1px solid #E5E7EB",
+          padding: "0 1.25rem", height: 44, display: "flex", gap: "0.625rem",
+          alignItems: "center", flexShrink: 0,
+        }}>
+          {/* Busca */}
+          <div style={{ position: "relative", flex: "0 0 240px" }}>
+            <svg style={{ position: "absolute", left: 8, top: "50%", transform: "translateY(-50%)", color: "#9CA3AF" }} width="13" height="13" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd"/>
             </svg>
             <input
               type="text"
-              placeholder="Buscar por nome, telefone…"
+              placeholder="Buscar contato…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               style={{
-                width: "100%", padding: "0.45rem 0.75rem 0.45rem 2rem",
-                border: "1px solid #e2e8f0", borderRadius: 8,
-                fontSize: "0.82rem", fontFamily: "inherit", outline: "none",
-                background: "#f8fafc",
+                width: "100%", padding: "0.35rem 0.625rem 0.35rem 1.75rem",
+                border: "1px solid #E5E7EB", borderRadius: 4,
+                fontSize: "0.75rem", fontFamily: "inherit", outline: "none",
+                background: "#F9FAFB", color: "#111827",
+                transition: "border-color 0.1s",
               }}
+              onFocus={(e) => { e.target.style.borderColor = "#6B7280"; }}
+              onBlur={(e) => { e.target.style.borderColor = "#E5E7EB"; }}
             />
           </div>
 
           {/* Canal tabs */}
-          <div style={{ display: "flex", gap: 2, background: "#f1f5f9", borderRadius: 8, padding: 3 }}>
+          <div style={{ display: "flex", gap: 0, border: "1px solid #E5E7EB", borderRadius: 4, overflow: "hidden" }}>
             {CANAL_TABS.map((t) => (
               <button key={t} onClick={() => setCanal(t)} style={{
-                padding: "0.3rem 0.65rem", borderRadius: 6, border: "none", cursor: "pointer",
-                fontSize: "0.78rem", fontWeight: 500, fontFamily: "inherit",
-                background: canal === t ? "white" : "transparent",
-                color: canal === t ? "#0f172a" : "#64748b",
-                boxShadow: canal === t ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
-                transition: "all 0.12s",
+                padding: "0.3rem 0.6rem", border: "none", cursor: "pointer",
+                fontSize: "0.72rem", fontWeight: 500, fontFamily: "inherit",
+                background: canal === t ? "#111827" : "white",
+                color: canal === t ? "white" : "#6B7280",
+                borderRight: t !== "Instagram" ? "1px solid #E5E7EB" : "none",
+                transition: "all 0.1s",
               }}>
                 {t}
               </button>
             ))}
           </div>
 
-          {/* Status filter */}
+          {/* Status select */}
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             style={{
-              padding: "0.4rem 0.65rem", border: "1px solid #e2e8f0",
-              borderRadius: 8, fontSize: "0.78rem", fontFamily: "inherit",
-              background: "#f8fafc", color: "#374151", outline: "none",
+              padding: "0.3rem 0.5rem", border: "1px solid #E5E7EB",
+              borderRadius: 4, fontSize: "0.72rem", fontFamily: "inherit",
+              background: "white", color: "#374151", outline: "none",
             }}
           >
             <option value="todos">Todos os estágios</option>
@@ -157,21 +168,12 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
             <option value="pos-venda">Pós-venda</option>
           </select>
 
-          <span style={{ marginLeft: "auto", fontSize: "0.78rem", color: "#94a3b8" }}>
+          <span style={{ marginLeft: "auto", fontSize: "0.68rem", color: "#9CA3AF" }}>
             {filtered.length} resultado{filtered.length !== 1 ? "s" : ""}
           </span>
 
-          {/* Novo contato button */}
-          <button
-            onClick={() => setShowModal(true)}
-            style={{
-              display: "flex", alignItems: "center", gap: "0.35rem",
-              background: "#0f172a", color: "white", border: "none", borderRadius: 8,
-              padding: "0.42rem 0.85rem", fontSize: "0.78rem", fontWeight: 600,
-              cursor: "pointer", fontFamily: "inherit",
-            }}
-          >
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+          <button onClick={() => setShowModal(true)} className="corp-btn corp-btn-primary" style={{ fontSize: "0.72rem" }}>
+            <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
               <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"/>
             </svg>
             Novo contato
@@ -179,16 +181,20 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
         </div>
 
         {/* Table */}
-        <div style={{ flex: 1, overflow: "auto", background: "#f8fafc" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.84rem" }}>
+        <div style={{ flex: 1, overflow: "auto", background: "#F9FAFB" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.78rem" }}>
             <thead>
-              <tr style={{ background: "white", borderBottom: "1px solid #e2e8f0", position: "sticky", top: 0, zIndex: 1 }}>
+              <tr style={{ background: "white", borderBottom: "1px solid #E5E7EB", position: "sticky", top: 0, zIndex: 1 }}>
                 {["Contato", "Canal", "Estágio", "Último contato", "Tags"].map((h) => (
-                  <th key={h} style={{ padding: "0.65rem 1rem", textAlign: "left", fontWeight: 600, fontSize: "0.72rem", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  <th key={h} style={{
+                    padding: "0.5rem 1rem", textAlign: "left",
+                    fontWeight: 600, fontSize: "0.65rem", color: "#9CA3AF",
+                    textTransform: "uppercase", letterSpacing: "0.06em",
+                  }}>
                     {h}
                   </th>
                 ))}
-                <th style={{ width: 80 }} />
+                <th style={{ width: 72 }} />
               </tr>
             </thead>
             <tbody>
@@ -200,71 +206,77 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
                     key={c.id}
                     onClick={() => setSelected(isSelected ? null : c)}
                     style={{
-                      background: isSelected ? "#f0f9ff" : "white",
-                      borderBottom: "1px solid #f1f5f9",
+                      background: isSelected ? "#F0F9FF" : "white",
+                      borderBottom: "1px solid #F3F4F6",
                       cursor: "pointer",
                       transition: "background 0.1s",
                     }}
-                    onMouseEnter={(e) => { if (!isSelected) (e.currentTarget as HTMLElement).style.background = "#f8fafc"; }}
+                    onMouseEnter={(e) => { if (!isSelected) (e.currentTarget as HTMLElement).style.background = "#F9FAFB"; }}
                     onMouseLeave={(e) => { if (!isSelected) (e.currentTarget as HTMLElement).style.background = "white"; }}
                   >
-                    <td style={{ padding: "0.75rem 1rem" }}>
-                      <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                        <Avatar nome={c.nome} />
+                    {/* Contato */}
+                    <td style={{ padding: "0.625rem 1rem" }}>
+                      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                        <Initials nome={c.nome} />
                         <div>
-                          <div style={{ fontWeight: 600, color: "#0f172a" }}>{c.nome}</div>
-                          <div style={{ fontSize: "0.72rem", color: "#94a3b8" }}>
+                          <div style={{ fontWeight: 600, color: "#111827", fontSize: "0.78rem" }}>{c.nome}</div>
+                          <div style={{ fontSize: "0.65rem", color: "#9CA3AF" }}>
                             {c.telefone ? fmtPhone(c.telefone) : `@${c.instagram_id}`}
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td style={{ padding: "0.75rem 1rem" }}>
-                      <span style={{
-                        display: "inline-flex", alignItems: "center", gap: 5,
-                        background: c.origem === "whatsapp" ? "#f0fdf4" : "#fdf2f8",
-                        color: c.origem === "whatsapp" ? "#15803d" : "#be185d",
-                        padding: "0.18rem 0.5rem", borderRadius: 5,
-                        fontSize: "0.7rem", fontWeight: 600,
-                      }}>
-                        <span style={{ width: 5, height: 5, borderRadius: "50%", background: "currentColor", display: "inline-block" }} />
+
+                    {/* Canal */}
+                    <td style={{ padding: "0.625rem 1rem" }}>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: "0.72rem", color: "#6B7280" }}>
+                        <span style={{ width: 5, height: 5, borderRadius: "50%", background: c.origem === "whatsapp" ? "#15803D" : "#9D174D", display: "inline-block" }} />
                         {c.origem === "whatsapp" ? "WhatsApp" : "Instagram"}
                       </span>
                     </td>
-                    <td style={{ padding: "0.75rem 1rem" }}>
-                      <span style={{
-                        background: `${STATUS_COLOR[c.status] ?? "#94a3b8"}18`,
-                        color: STATUS_COLOR[c.status] ?? "#94a3b8",
-                        padding: "0.2rem 0.55rem", borderRadius: 5,
-                        fontSize: "0.72rem", fontWeight: 600,
-                      }}>
+
+                    {/* Estágio */}
+                    <td style={{ padding: "0.625rem 1rem" }}>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: "0.72rem", fontWeight: 600, color: STATUS_COLOR[c.status] ?? "#6B7280" }}>
+                        <span style={{ width: 5, height: 5, borderRadius: "50%", background: "currentColor", display: "inline-block" }} />
                         {STATUS_LABEL[c.status] ?? c.status}
                       </span>
                     </td>
-                    <td style={{ padding: "0.75rem 1rem", color: "#64748b", fontSize: "0.8rem" }}>
+
+                    {/* Último contato */}
+                    <td style={{ padding: "0.625rem 1rem", color: "#9CA3AF", fontSize: "0.72rem" }}>
                       {timeAgo(c.last_seen_at)}
                     </td>
-                    <td style={{ padding: "0.75rem 1rem" }}>
-                      <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-                        {visibleTags.slice(0, 2).map((t: string) => (
-                          <span key={t} style={{ background: "#f1f5f9", color: "#475569", padding: "0.1rem 0.4rem", borderRadius: 4, fontSize: "0.65rem", fontWeight: 500 }}>
+
+                    {/* Tags */}
+                    <td style={{ padding: "0.625rem 1rem" }}>
+                      <div style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
+                        {visibleTags.slice(0, 3).map((t: string) => (
+                          <span key={t} style={{
+                            border: "1px solid #E5E7EB", color: "#6B7280",
+                            padding: "0.05rem 0.35rem", borderRadius: 3,
+                            fontSize: "0.62rem", fontWeight: 500, background: "#F9FAFB",
+                          }}>
                             {t}
                           </span>
                         ))}
                       </div>
                     </td>
-                    <td style={{ padding: "0.75rem 1rem" }}>
+
+                    {/* Ação */}
+                    <td style={{ padding: "0.625rem 1rem" }}>
                       <button
                         onClick={(e) => { e.stopPropagation(); setSelected(isSelected ? null : c); }}
                         style={{
-                          background: isSelected ? "#0f172a" : "#f1f5f9",
-                          color: isSelected ? "white" : "#475569",
-                          border: "none", borderRadius: 7, padding: "0.3rem 0.65rem",
-                          fontSize: "0.75rem", fontWeight: 500, cursor: "pointer",
-                          fontFamily: "inherit",
+                          background: isSelected ? "#111827" : "white",
+                          color: isSelected ? "white" : "#6B7280",
+                          border: "1px solid #E5E7EB",
+                          borderRadius: 4, padding: "0.25rem 0.5rem",
+                          fontSize: "0.65rem", fontWeight: 600, cursor: "pointer",
+                          fontFamily: "inherit", transition: "all 0.1s",
                         }}
                       >
-                        {isSelected ? "Fechar" : "Conversa"}
+                        {isSelected ? "Fechar" : "Ver"}
                       </button>
                     </td>
                   </tr>
@@ -273,8 +285,8 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
 
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={6} style={{ padding: "3rem", textAlign: "center", color: "#94a3b8" }}>
-                    Nenhum contato encontrado para os filtros aplicados.
+                  <td colSpan={6} style={{ padding: "3rem", textAlign: "center", color: "#9CA3AF", fontSize: "0.78rem" }}>
+                    Nenhum contato encontrado.
                   </td>
                 </tr>
               )}
@@ -296,6 +308,10 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
           onClose={() => setShowModal(false)}
           onCreated={handleCreated}
         />
+      )}
+
+      {toast && (
+        <Toast message={toast.message} type={toast.type} onDone={() => setToast(null)} />
       )}
     </div>
   );

@@ -30,11 +30,11 @@ type Props = {
 };
 
 const STAGES = [
-  { key: "novo",        label: "Novo",        color: "#64748b" },
-  { key: "qualificado", label: "Qualificado", color: "#3b82f6" },
-  { key: "negociacao",  label: "Negociação",  color: "#f59e0b" },
-  { key: "fechamento",  label: "Fechamento",  color: "#10b981" },
-  { key: "pos-venda",   label: "Pós-venda",   color: "#8b5cf6" },
+  { key: "novo",        label: "Novo",        color: "#6B7280" },
+  { key: "qualificado", label: "Qualificado", color: "#1D4ED8" },
+  { key: "negociacao",  label: "Negociação",  color: "#A16207" },
+  { key: "fechamento",  label: "Fechamento",  color: "#15803D" },
+  { key: "pos-venda",   label: "Pós-venda",   color: "#374151" },
 ];
 
 function formatTime(iso: string) {
@@ -171,7 +171,7 @@ export default function ConversationView({ contact, onClose, onUpdate }: Props) 
     else last.msgs.push(msg);
   }
 
-  const canalColor = contact.origem === "whatsapp" ? "#16a34a" : "#be185d";
+  const canalColor = contact.origem === "whatsapp" ? "#15803D" : "#9D174D";
   const canalLabel = contact.origem === "whatsapp" ? "WhatsApp" : "Instagram";
   const accentColor = contact.stageColor ?? "#3b82f6";
   const initials = contact.nome.trim().split(/\s+/).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
@@ -191,10 +191,10 @@ export default function ConversationView({ contact, onClose, onUpdate }: Props) 
         flexShrink: 0, borderTop: `3px solid ${accentColor}`,
       }}>
         <div style={{
-          width: 38, height: 38, borderRadius: "50%",
-          background: `hsl(${hue},55%,50%)`,
+          width: 32, height: 32, borderRadius: 4,
+          background: `hsl(${hue},40%,45%)`,
           display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: "0.9rem", fontWeight: 700, color: "white", flexShrink: 0,
+          fontSize: "0.7rem", fontWeight: 700, color: "white", flexShrink: 0, letterSpacing: "-0.5px",
         }}>
           {initials}
         </div>
@@ -210,7 +210,7 @@ export default function ConversationView({ contact, onClose, onUpdate }: Props) 
           {visibleTags.length > 0 && (
             <div style={{ display: "flex", gap: 3, marginTop: 3, flexWrap: "wrap" }}>
               {visibleTags.slice(0, 3).map((t) => (
-                <span key={t} style={{ background: "#f1f5f9", color: "#475569", padding: "0.05rem 0.4rem", borderRadius: 4, fontSize: "0.62rem", fontWeight: 500 }}>
+                <span key={t} style={{ border: "1px solid #E5E7EB", color: "#6B7280", padding: "0 0.3rem", borderRadius: 3, fontSize: "0.6rem", fontWeight: 500, background: "#F9FAFB" }}>
                   {t}
                 </span>
               ))}
@@ -223,8 +223,8 @@ export default function ConversationView({ contact, onClose, onUpdate }: Props) 
             onClick={() => setEditMode(!editMode)}
             title="Editar contato"
             style={{
-              background: editMode ? "#f1f5f9" : "none", border: "none", cursor: "pointer",
-              color: editMode ? "#0f172a" : "#9ca3af", padding: "0.25rem 0.4rem", borderRadius: 6,
+              background: editMode ? "#F3F4F6" : "none", border: "none", cursor: "pointer",
+              color: editMode ? "#111827" : "#9CA3AF", padding: "0.25rem 0.4rem", borderRadius: 4,
             }}
           >
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
@@ -243,72 +243,38 @@ export default function ConversationView({ contact, onClose, onUpdate }: Props) 
       {/* Edit panel */}
       {editMode && (
         <div style={{
-          background: "#f8fafc", borderBottom: "1px solid #e2e8f0",
-          padding: "0.875rem 1rem", flexShrink: 0,
+          background: "#F9FAFB", borderBottom: "1px solid #E5E7EB",
+          padding: "0.75rem 1rem", flexShrink: 0,
         }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem", marginBottom: "0.6rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem", marginBottom: "0.5rem" }}>
             <div style={{ gridColumn: "1/-1" }}>
-              <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 600, color: "#374151", marginBottom: "0.25rem" }}>Nome</label>
-              <input
-                value={editNome}
-                onChange={(e) => setEditNome(e.target.value)}
-                style={{
-                  width: "100%", padding: "0.4rem 0.6rem",
-                  border: "1.5px solid #d1d5db", borderRadius: 7,
-                  fontSize: "0.83rem", fontFamily: "inherit", outline: "none",
-                  boxSizing: "border-box",
-                }}
-                onFocus={(e) => { e.target.style.borderColor = "#3b82f6"; }}
-                onBlur={(e) => { e.target.style.borderColor = "#d1d5db"; }}
+              <label style={{ display: "block", fontSize: "0.65rem", fontWeight: 600, color: "#6B7280", marginBottom: "0.2rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Nome</label>
+              <input value={editNome} onChange={(e) => setEditNome(e.target.value)}
+                style={{ width: "100%", padding: "0.375rem 0.5rem", border: "1px solid #D1D5DB", borderRadius: 4, fontSize: "0.78rem", fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
+                onFocus={(e) => { e.target.style.borderColor = "#6B7280"; }}
+                onBlur={(e) => { e.target.style.borderColor = "#D1D5DB"; }}
               />
             </div>
             <div>
-              <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 600, color: "#374151", marginBottom: "0.25rem" }}>Tags</label>
-              <input
-                value={editTags}
-                onChange={(e) => setEditTags(e.target.value)}
-                placeholder="vip, urgente…"
-                style={{
-                  width: "100%", padding: "0.4rem 0.6rem",
-                  border: "1.5px solid #d1d5db", borderRadius: 7,
-                  fontSize: "0.83rem", fontFamily: "inherit", outline: "none",
-                  boxSizing: "border-box",
-                }}
-                onFocus={(e) => { e.target.style.borderColor = "#3b82f6"; }}
-                onBlur={(e) => { e.target.style.borderColor = "#d1d5db"; }}
+              <label style={{ display: "block", fontSize: "0.65rem", fontWeight: 600, color: "#6B7280", marginBottom: "0.2rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Tags</label>
+              <input value={editTags} onChange={(e) => setEditTags(e.target.value)} placeholder="vip, urgente…"
+                style={{ width: "100%", padding: "0.375rem 0.5rem", border: "1px solid #D1D5DB", borderRadius: 4, fontSize: "0.78rem", fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
+                onFocus={(e) => { e.target.style.borderColor = "#6B7280"; }}
+                onBlur={(e) => { e.target.style.borderColor = "#D1D5DB"; }}
               />
             </div>
             <div>
-              <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 600, color: "#374151", marginBottom: "0.25rem" }}>Estágio</label>
-              <select
-                value={editStatus}
-                onChange={(e) => setEditStatus(e.target.value)}
-                style={{
-                  width: "100%", padding: "0.4rem 0.5rem",
-                  border: "1.5px solid #d1d5db", borderRadius: 7,
-                  fontSize: "0.83rem", fontFamily: "inherit", outline: "none",
-                  background: "white",
-                }}
-              >
+              <label style={{ display: "block", fontSize: "0.65rem", fontWeight: 600, color: "#6B7280", marginBottom: "0.2rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Estágio</label>
+              <select value={editStatus} onChange={(e) => setEditStatus(e.target.value)}
+                style={{ width: "100%", padding: "0.375rem 0.5rem", border: "1px solid #D1D5DB", borderRadius: 4, fontSize: "0.78rem", fontFamily: "inherit", outline: "none", background: "white" }}>
                 {STAGES.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
               </select>
             </div>
           </div>
-          {editError && (
-            <div style={{ fontSize: "0.75rem", color: "#dc2626", marginBottom: "0.5rem" }}>{editError}</div>
-          )}
-          <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}>
-            <button onClick={() => setEditMode(false)} style={{
-              padding: "0.35rem 0.75rem", border: "1px solid #e2e8f0", borderRadius: 7,
-              background: "white", fontSize: "0.78rem", fontFamily: "inherit", cursor: "pointer", color: "#374151",
-            }}>
-              Cancelar
-            </button>
-            <button onClick={saveEdit} disabled={editSaving} style={{
-              padding: "0.35rem 0.875rem", border: "none", borderRadius: 7,
-              background: editSaving ? "#94a3b8" : "#0f172a", color: "white",
-              fontSize: "0.78rem", fontFamily: "inherit", cursor: editSaving ? "not-allowed" : "pointer", fontWeight: 600,
-            }}>
+          {editError && <div style={{ fontSize: "0.72rem", color: "#DC2626", marginBottom: "0.4rem" }}>{editError}</div>}
+          <div style={{ display: "flex", gap: "0.4rem", justifyContent: "flex-end" }}>
+            <button onClick={() => setEditMode(false)} className="corp-btn corp-btn-secondary">Cancelar</button>
+            <button onClick={saveEdit} disabled={editSaving} className="corp-btn corp-btn-primary" style={{ opacity: editSaving ? 0.6 : 1 }}>
               {editSaving ? "Salvando…" : "Salvar"}
             </button>
           </div>
@@ -319,15 +285,15 @@ export default function ConversationView({ contact, onClose, onUpdate }: Props) 
       <div style={{ display: "flex", borderBottom: "1px solid #e5e7eb", background: "white", flexShrink: 0 }}>
         {(["conversa", "notas"] as const).map((tab) => (
           <button key={tab} onClick={() => setActiveTab(tab)} style={{
-            padding: "0.5rem 1.1rem", border: "none", cursor: "pointer",
-            fontFamily: "inherit", fontSize: "0.78rem",
-            fontWeight: activeTab === tab ? 700 : 400,
-            color: activeTab === tab ? "#0f172a" : "#94a3b8",
+            padding: "0.45rem 1rem", border: "none", cursor: "pointer",
+            fontFamily: "inherit", fontSize: "0.72rem",
+            fontWeight: activeTab === tab ? 700 : 500,
+            color: activeTab === tab ? "#111827" : "#9CA3AF",
             background: "none",
-            borderBottom: activeTab === tab ? "2px solid #0f172a" : "2px solid transparent",
-            transition: "all 0.12s",
+            borderBottom: activeTab === tab ? "2px solid #111827" : "2px solid transparent",
+            transition: "all 0.1s",
           }}>
-            {tab === "conversa" ? "💬 Conversa" : "📝 Notas"}
+            {tab === "conversa" ? "Conversa" : "Notas"}
           </button>
         ))}
       </div>
@@ -403,24 +369,24 @@ export default function ConversationView({ contact, onClose, onUpdate }: Props) 
                 rows={2}
                 style={{
                   flex: 1, resize: "none",
-                  border: "1.5px solid #d1d5db",
-                  borderRadius: 8, padding: "0.5rem 0.7rem",
-                  fontSize: "0.85rem", fontFamily: "inherit",
-                  outline: "none", transition: "border-color 0.15s",
+                  border: "1px solid #D1D5DB",
+                  borderRadius: 4, padding: "0.45rem 0.625rem",
+                  fontSize: "0.82rem", fontFamily: "inherit",
+                  outline: "none", transition: "border-color 0.1s",
                 }}
-                onFocus={(e) => { e.target.style.borderColor = "#3b82f6"; }}
-                onBlur={(e) => { e.target.style.borderColor = "#d1d5db"; }}
+                onFocus={(e) => { e.target.style.borderColor = "#6B7280"; }}
+                onBlur={(e) => { e.target.style.borderColor = "#D1D5DB"; }}
               />
               <button
                 onClick={send}
                 disabled={sending || !text.trim()}
                 style={{
-                  background: sending || !text.trim() ? "#e5e7eb" : "#16a34a",
-                  color: sending || !text.trim() ? "#9ca3af" : "white",
-                  border: "none", borderRadius: 8,
-                  padding: "0.5rem 0.8rem",
+                  background: sending || !text.trim() ? "#E5E7EB" : "#111827",
+                  color: sending || !text.trim() ? "#9CA3AF" : "white",
+                  border: "none", borderRadius: 4,
+                  padding: "0.5rem 0.75rem",
                   fontSize: "1rem", cursor: sending || !text.trim() ? "not-allowed" : "pointer",
-                  transition: "background 0.15s", height: 58,
+                  transition: "background 0.1s", height: 58,
                 }}
               >
                 {sending ? "…" : "➤"}

@@ -26,6 +26,15 @@ const STAGES = [
   { key: "pos-venda",   label: "Pós-venda" },
 ];
 
+const inputStyle: React.CSSProperties = {
+  width: "100%", padding: "0.42rem 0.625rem",
+  border: "1px solid #D1D5DB", borderRadius: 4,
+  fontSize: "0.82rem", fontFamily: "inherit",
+  outline: "none", boxSizing: "border-box",
+  transition: "border-color 0.1s",
+  color: "#111827", background: "white",
+};
+
 export default function NovoContatoModal({ onClose, onCreated }: Props) {
   const [nome, setNome] = useState("");
   const [canal, setCanal] = useState<"whatsapp" | "instagram">("whatsapp");
@@ -44,10 +53,7 @@ export default function NovoContatoModal({ onClose, onCreated }: Props) {
     setError("");
 
     const body: Record<string, unknown> = {
-      nome: nome.trim(),
-      origem: canal,
-      status,
-      tags: [],
+      nome: nome.trim(), origem: canal, status, tags: [],
     };
     if (canal === "whatsapp") body.telefone = telefone.replace(/\D/g, "");
     else body.instagram_id = instaHandle.replace(/^@/, "");
@@ -78,32 +84,33 @@ export default function NovoContatoModal({ onClose, onCreated }: Props) {
     <div
       style={{
         position: "fixed", inset: 0, zIndex: 1000,
-        background: "rgba(15,23,42,0.5)",
+        background: "rgba(0,0,0,0.45)",
         display: "flex", alignItems: "center", justifyContent: "center",
       }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div
         style={{
-          background: "white", borderRadius: 16, width: 440, maxWidth: "92vw",
-          boxShadow: "0 24px 64px rgba(0,0,0,0.22)",
-          padding: "1.75rem",
+          background: "white", borderRadius: 6, width: 420, maxWidth: "92vw",
+          border: "1px solid #E5E7EB",
+          boxShadow: "0 16px 48px rgba(0,0,0,0.16)",
+          padding: "1.25rem",
           animation: "slideUp 0.18s ease",
         }}
         onKeyDown={onKeyDown}
       >
         {/* Header */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.5rem" }}>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "1.125rem" }}>
           <div>
-            <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 700, color: "#0f172a" }}>Novo contato</h2>
-            <p style={{ margin: "0.1rem 0 0", fontSize: "0.72rem", color: "#94a3b8" }}>Preencha os dados para adicionar ao pipeline</p>
+            <h2 style={{ margin: 0, fontSize: "0.88rem", fontWeight: 700, color: "#111827", letterSpacing: "-0.01em" }}>Novo contato</h2>
+            <p style={{ margin: "0.1rem 0 0", fontSize: "0.68rem", color: "#9CA3AF" }}>Preencha os dados para adicionar ao pipeline</p>
           </div>
-          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: "1.1rem", padding: "0.2rem 0.4rem", borderRadius: 4 }}>✕</button>
+          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#9CA3AF", padding: "0.15rem 0.3rem", borderRadius: 3, fontSize: "1rem", lineHeight: 1 }}>✕</button>
         </div>
 
         {/* Nome */}
-        <div style={{ marginBottom: "1rem" }}>
-          <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+        <div style={{ marginBottom: "0.75rem" }}>
+          <label style={{ display: "block", fontSize: "0.68rem", fontWeight: 600, color: "#6B7280", marginBottom: "0.25rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
             Nome completo *
           </label>
           <input
@@ -112,127 +119,79 @@ export default function NovoContatoModal({ onClose, onCreated }: Props) {
             onChange={(e) => setNome(e.target.value)}
             placeholder="Ex: Maria Silva"
             autoFocus
-            style={{
-              width: "100%", padding: "0.55rem 0.75rem",
-              border: "1.5px solid #d1d5db", borderRadius: 8,
-              fontSize: "0.88rem", fontFamily: "inherit",
-              outline: "none", boxSizing: "border-box",
-              transition: "border-color 0.15s",
-            }}
-            onFocus={(e) => { e.target.style.borderColor = "#3b82f6"; }}
-            onBlur={(e) => { e.target.style.borderColor = "#d1d5db"; }}
+            style={inputStyle}
+            onFocus={(e) => { e.target.style.borderColor = "#6B7280"; }}
+            onBlur={(e) => { e.target.style.borderColor = "#D1D5DB"; }}
           />
         </div>
 
-        {/* Canal */}
-        <div style={{ marginBottom: "1rem" }}>
-          <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 600, color: "#374151", marginBottom: "0.5rem" }}>Canal</label>
-          <div style={{ display: "flex", gap: "0.5rem" }}>
-            {(["whatsapp", "instagram"] as const).map((c) => {
-              const isSelected = canal === c;
-              const color = c === "whatsapp" ? "#16a34a" : "#be185d";
-              return (
-                <button key={c} onClick={() => setCanal(c)} type="button" style={{
-                  flex: 1, padding: "0.6rem",
-                  border: `2px solid ${isSelected ? color : "#e5e7eb"}`,
-                  borderRadius: 8, cursor: "pointer",
-                  background: isSelected ? (c === "whatsapp" ? "#f0fdf4" : "#fdf2f8") : "white",
-                  fontFamily: "inherit", fontSize: "0.82rem", fontWeight: 600,
-                  color: isSelected ? color : "#64748b",
-                  transition: "all 0.12s",
-                }}>
-                  {c === "whatsapp" ? "📱 WhatsApp" : "📸 Instagram"}
-                </button>
-              );
-            })}
+        {/* Canal — segmented control */}
+        <div style={{ marginBottom: "0.75rem" }}>
+          <label style={{ display: "block", fontSize: "0.68rem", fontWeight: 600, color: "#6B7280", marginBottom: "0.25rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Canal</label>
+          <div style={{ display: "flex", border: "1px solid #E5E7EB", borderRadius: 4, overflow: "hidden" }}>
+            {(["whatsapp", "instagram"] as const).map((c, i) => (
+              <button key={c} onClick={() => setCanal(c)} type="button" style={{
+                flex: 1, padding: "0.4rem 0",
+                border: "none",
+                borderRight: i === 0 ? "1px solid #E5E7EB" : "none",
+                cursor: "pointer",
+                background: canal === c ? "#111827" : "white",
+                fontFamily: "inherit", fontSize: "0.75rem", fontWeight: 600,
+                color: canal === c ? "white" : "#6B7280",
+                transition: "all 0.1s",
+              }}>
+                {c === "whatsapp" ? "WhatsApp" : "Instagram"}
+              </button>
+            ))}
           </div>
         </div>
 
         {/* Identificador */}
-        <div style={{ marginBottom: "1rem" }}>
-          <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+        <div style={{ marginBottom: "0.75rem" }}>
+          <label style={{ display: "block", fontSize: "0.68rem", fontWeight: 600, color: "#6B7280", marginBottom: "0.25rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
             {canal === "whatsapp" ? "Telefone (DDI+DDD+número) *" : "Instagram handle *"}
           </label>
           {canal === "whatsapp" ? (
-            <input
-              type="tel"
-              value={telefone}
-              onChange={(e) => setTelefone(e.target.value)}
-              placeholder="Ex: 5511999887766"
-              style={{
-                width: "100%", padding: "0.55rem 0.75rem",
-                border: "1.5px solid #d1d5db", borderRadius: 8,
-                fontSize: "0.88rem", fontFamily: "inherit",
-                outline: "none", boxSizing: "border-box",
-                transition: "border-color 0.15s",
-              }}
-              onFocus={(e) => { e.target.style.borderColor = "#3b82f6"; }}
-              onBlur={(e) => { e.target.style.borderColor = "#d1d5db"; }}
+            <input type="tel" value={telefone} onChange={(e) => setTelefone(e.target.value)}
+              placeholder="5511999887766" style={inputStyle}
+              onFocus={(e) => { e.target.style.borderColor = "#6B7280"; }}
+              onBlur={(e) => { e.target.style.borderColor = "#D1D5DB"; }}
             />
           ) : (
-            <input
-              type="text"
-              value={instaHandle}
-              onChange={(e) => setInstaHandle(e.target.value)}
-              placeholder="@usuario"
-              style={{
-                width: "100%", padding: "0.55rem 0.75rem",
-                border: "1.5px solid #d1d5db", borderRadius: 8,
-                fontSize: "0.88rem", fontFamily: "inherit",
-                outline: "none", boxSizing: "border-box",
-                transition: "border-color 0.15s",
-              }}
-              onFocus={(e) => { e.target.style.borderColor = "#3b82f6"; }}
-              onBlur={(e) => { e.target.style.borderColor = "#d1d5db"; }}
+            <input type="text" value={instaHandle} onChange={(e) => setInstaHandle(e.target.value)}
+              placeholder="@usuario" style={inputStyle}
+              onFocus={(e) => { e.target.style.borderColor = "#6B7280"; }}
+              onBlur={(e) => { e.target.style.borderColor = "#D1D5DB"; }}
             />
           )}
         </div>
 
         {/* Estágio */}
-        <div style={{ marginBottom: "1.5rem" }}>
-          <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+        <div style={{ marginBottom: "1rem" }}>
+          <label style={{ display: "block", fontSize: "0.68rem", fontWeight: 600, color: "#6B7280", marginBottom: "0.25rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
             Estágio inicial
           </label>
-          <select
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-            style={{
-              width: "100%", padding: "0.55rem 0.75rem",
-              border: "1.5px solid #d1d5db", borderRadius: 8,
-              fontSize: "0.88rem", fontFamily: "inherit",
-              outline: "none", background: "white",
-              cursor: "pointer",
-            }}
-          >
+          <select value={status} onChange={(e) => setStatus(e.target.value)}
+            style={{ ...inputStyle, cursor: "pointer", background: "white" }}>
             {STAGES.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
           </select>
         </div>
 
         {error && (
           <div style={{
-            background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 8,
-            padding: "0.5rem 0.75rem", marginBottom: "1rem",
-            fontSize: "0.82rem", color: "#dc2626",
+            border: "1px solid #FECACA", borderRadius: 4,
+            padding: "0.4rem 0.625rem", marginBottom: "0.75rem",
+            fontSize: "0.72rem", color: "#DC2626", background: "#FFF5F5",
           }}>
             {error}
           </div>
         )}
 
-        <div style={{ display: "flex", gap: "0.75rem", justifyContent: "flex-end" }}>
-          <button onClick={onClose} style={{
-            padding: "0.55rem 1.25rem", border: "1.5px solid #e2e8f0",
-            borderRadius: 8, cursor: "pointer", background: "white",
-            fontSize: "0.85rem", fontFamily: "inherit", color: "#374151", fontWeight: 500,
-          }}>
+        <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}>
+          <button onClick={onClose} className="corp-btn corp-btn-secondary">
             Cancelar
           </button>
-          <button onClick={submit} disabled={saving} style={{
-            padding: "0.55rem 1.5rem", border: "none",
-            borderRadius: 8, cursor: saving ? "not-allowed" : "pointer",
-            background: saving ? "#94a3b8" : "#0f172a",
-            fontSize: "0.85rem", fontFamily: "inherit", color: "white", fontWeight: 600,
-            transition: "background 0.15s",
-          }}>
+          <button onClick={submit} disabled={saving} className="corp-btn corp-btn-primary" style={{ opacity: saving ? 0.6 : 1, cursor: saving ? "not-allowed" : "pointer" }}>
             {saving ? "Salvando…" : "Criar contato"}
           </button>
         </div>

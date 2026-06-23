@@ -17,6 +17,11 @@ const nextConfig = {
     NEXT_PUBLIC_SUPABASE_URL: process.env.SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
   },
+  experimental: {
+    // TTL 0 no Router Cache para rotas dinâmicas: toda navegação busca RSC
+    // payload fresco do servidor em vez de servir cache de até 30s.
+    staleTimes: { dynamic: 0 },
+  },
 };
 
 export default nextConfig;

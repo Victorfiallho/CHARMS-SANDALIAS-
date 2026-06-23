@@ -69,7 +69,7 @@ const CANAL_TABS = ["Todos", "WhatsApp", "Instagram"] as const;
 
 export default function InboxClient({ contacts: initialContacts, lastMessages }: Props) {
   const router = useRouter();
-  const [contacts] = useRealtimeContacts(initialContacts);
+  const [contacts, setContacts] = useRealtimeContacts(initialContacts);
   const [selected, setSelected] = useState<Contact | null>(null);
   const [canal, setCanal] = useState<typeof CANAL_TABS[number]>("Todos");
   const [search, setSearch] = useState("");
@@ -213,7 +213,8 @@ export default function InboxClient({ contacts: initialContacts, lastMessages }:
           contact={{ ...selected, stageColor: STATUS_COLOR[selected.status] }}
           onClose={() => setSelected(null)}
           onUpdate={(updated) => {
-            void updated;
+            setContacts((prev) => prev.map((c) => c.id === updated.id ? { ...c, ...updated } : c));
+            setSelected((prev) => prev?.id === updated.id ? { ...prev, ...updated } as Contact : prev);
             router.refresh();
           }}
         />

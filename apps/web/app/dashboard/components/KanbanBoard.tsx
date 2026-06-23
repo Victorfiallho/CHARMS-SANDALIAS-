@@ -112,12 +112,14 @@ export default function KanbanBoard({ contacts }: Props) {
 
     if (res.ok) {
       setToast({ message: `Movido para ${stageLabel}` });
+      // Invalida o Router Cache para que outros módulos mostrem dados frescos.
+      // O novo hook (sem prop-sync) não reseta o estado local quando isso acontece.
+      router.refresh();
     } else {
-      // Reverte ao status original capturado antes do update otimista
       setCards((prev) => prev.map((c) => c.id === id ? { ...c, status: originalStatus } : c));
       setToast({ message: "Erro ao mover contato", type: "error" });
     }
-  }, []);
+  }, [router]);
 
   // Attach global mouse listeners while dragging
   useEffect(() => {

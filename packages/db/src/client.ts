@@ -2,12 +2,14 @@ import { createClient } from "@supabase/supabase-js";
 import type { ContactStatus } from "@charms/types";
 
 const supabaseUrl = process.env.SUPABASE_URL || "https://placeholder.supabase.co";
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || "placeholder-key";
+// service role bypasses RLS — necessário no worker (server-side)
+const supabaseKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.SUPABASE_ANON_KEY ||
+  "placeholder-key";
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    persistSession: false,
-  },
+export const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: { persistSession: false },
 });
 
 function buildContactFilter(telefone?: string, instagramId?: string, email?: string) {
@@ -83,8 +85,7 @@ export async function upsertContactWithIdentifiers(options: {
     const update: Partial<ContactRecord> = {
       nome,
       origem,
-      status,
-      tags,
+      // Não sobrescreve status — contato existente mantém o estágio do pipeline
       last_seen_at: new Date().toISOString(),
     };
 

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import ConversationView from "../components/ConversationView";
+import NovoContatoModal from "../components/NovoContatoModal";
 
 type Contact = {
   id: string;
@@ -11,7 +12,7 @@ type Contact = {
   origem: string;
   status: string;
   tags: string[];
-  created_at: string;
+  created_at?: string;
   last_seen_at: string | null;
 };
 
@@ -65,11 +66,13 @@ type Props = { contacts: Contact[] };
 
 const CANAL_TABS = ["Todos", "WhatsApp", "Instagram"] as const;
 
-export default function ContactsClient({ contacts }: Props) {
+export default function ContactsClient({ contacts: initialContacts }: Props) {
+  const [contacts, setContacts] = useState<Contact[]>(initialContacts);
   const [search, setSearch] = useState("");
   const [canal, setCanal] = useState<typeof CANAL_TABS[number]>("Todos");
   const [statusFilter, setStatusFilter] = useState("todos");
   const [selected, setSelected] = useState<Contact | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
@@ -87,11 +90,19 @@ export default function ContactsClient({ contacts }: Props) {
     });
   }, [contacts, search, canal, statusFilter]);
 
+  const handleUpdate = useCallback((updated: Contact) => {
+    setContacts((prev) => prev.map((c) => c.id === updated.id ? { ...c, ...updated } : c));
+    setSelected((prev) => prev?.id === updated.id ? { ...prev, ...updated } as Contact : prev);
+  }, []);
+
+  const handleCreated = useCallback((contact: Contact) => {
+    setContacts((prev) => [contact, ...prev]);
+  }, []);
+
   return (
     <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
-      {/* Table area */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-        {/* Filters */}
+        {/* Filters bar */}
         <div style={{ background: "white", borderBottom: "1px solid #e2e8f0", padding: "0.75rem 1.5rem", display: "flex", gap: "0.75rem", alignItems: "center", flexShrink: 0 }}>
           {/* Search */}
           <div style={{ position: "relative", flex: "0 0 260px" }}>
@@ -149,6 +160,22 @@ export default function ContactsClient({ contacts }: Props) {
           <span style={{ marginLeft: "auto", fontSize: "0.78rem", color: "#94a3b8" }}>
             {filtered.length} resultado{filtered.length !== 1 ? "s" : ""}
           </span>
+
+          {/* Novo contato button */}
+          <button
+            onClick={() => setShowModal(true)}
+            style={{
+              display: "flex", alignItems: "center", gap: "0.35rem",
+              background: "#0f172a", color: "white", border: "none", borderRadius: 8,
+              padding: "0.42rem 0.85rem", fontSize: "0.78rem", fontWeight: 600,
+              cursor: "pointer", fontFamily: "inherit",
+            }}
+          >
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"/>
+            </svg>
+            Novo contato
+          </button>
         </div>
 
         {/* Table */}
@@ -167,6 +194,7 @@ export default function ContactsClient({ contacts }: Props) {
             <tbody>
               {filtered.map((c) => {
                 const isSelected = selected?.id === c.id;
+                const visibleTags = (c.tags ?? []).filter((t: string) => t !== "demo");
                 return (
                   <tr
                     key={c.id}
@@ -205,8 +233,8 @@ export default function ContactsClient({ contacts }: Props) {
                     </td>
                     <td style={{ padding: "0.75rem 1rem" }}>
                       <span style={{
-                        background: `${STATUS_COLOR[c.status]}18`,
-                        color: STATUS_COLOR[c.status],
+                        background: `${STATUS_COLOR[c.status] ?? "#94a3b8"}18`,
+                        color: STATUS_COLOR[c.status] ?? "#94a3b8",
                         padding: "0.2rem 0.55rem", borderRadius: 5,
                         fontSize: "0.72rem", fontWeight: 600,
                       }}>
@@ -218,7 +246,7 @@ export default function ContactsClient({ contacts }: Props) {
                     </td>
                     <td style={{ padding: "0.75rem 1rem" }}>
                       <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-                        {(c.tags ?? []).filter((t: string) => t !== "demo").slice(0, 2).map((t: string) => (
+                        {visibleTags.slice(0, 2).map((t: string) => (
                           <span key={t} style={{ background: "#f1f5f9", color: "#475569", padding: "0.1rem 0.4rem", borderRadius: 4, fontSize: "0.65rem", fontWeight: 500 }}>
                             {t}
                           </span>
@@ -255,11 +283,18 @@ export default function ContactsClient({ contacts }: Props) {
         </div>
       </div>
 
-      {/* Conversation panel */}
       {selected && (
         <ConversationView
           contact={{ ...selected, stageColor: STATUS_COLOR[selected.status] }}
           onClose={() => setSelected(null)}
+          onUpdate={handleUpdate}
+        />
+      )}
+
+      {showModal && (
+        <NovoContatoModal
+          onClose={() => setShowModal(false)}
+          onCreated={handleCreated}
         />
       )}
     </div>

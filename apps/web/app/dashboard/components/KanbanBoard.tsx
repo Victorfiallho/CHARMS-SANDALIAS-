@@ -94,19 +94,30 @@ export default function KanbanBoard({ contacts }: Props) {
     const id = dragIdRef.current;
     if (!id) return;
     const stageLabel = STAGES.find((s) => s.key === targetStatus)?.label ?? targetStatus;
+
+    // Captura o status original antes do update otimista
+    let originalStatus = targetStatus;
     setCards((prev) => {
       const card = prev.find((c) => c.id === id);
       if (!card || card.status === targetStatus) return prev;
+      originalStatus = card.status;
       return prev.map((c) => c.id === id ? { ...c, status: targetStatus } : c);
     });
+
     const res = await fetch(`/api/contacts/${id}/status`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status: targetStatus }),
     });
-    if (res.ok) { setToast({ message: `Movido para ${stageLabel}` }); router.refresh(); }
-    else setToast({ message: "Erro ao mover contato", type: "error" });
-  }, [router]);
+
+    if (res.ok) {
+      setToast({ message: `Movido para ${stageLabel}` });
+    } else {
+      // Reverte ao status original capturado antes do update otimista
+      setCards((prev) => prev.map((c) => c.id === id ? { ...c, status: originalStatus } : c));
+      setToast({ message: "Erro ao mover contato", type: "error" });
+    }
+  }, []);
 
   // Attach global mouse listeners while dragging
   useEffect(() => {

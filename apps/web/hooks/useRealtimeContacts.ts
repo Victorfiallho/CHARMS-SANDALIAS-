@@ -15,20 +15,24 @@ export type RealtimeContact = {
   last_seen_at: string | null;
 };
 
-/**
- * Regra simples:
- *  - Estado inicial = dados SSR (já corretos ao montar a página)
- *  - Enquanto o componente está montado, o Supabase Realtime empurra patches
- *  - NÃO reseta o estado quando os props do servidor mudam — isso sobrescreveria
- *    atualizações otimistas com dados potencialmente mais antigos.
- *    Quem garante dados frescos na (re)montagem é o servidor via force-dynamic.
- */
 export function useRealtimeContacts(initialContacts: RealtimeContact[]) {
   const [contacts, setContacts] = useState<RealtimeContact[]>(initialContacts);
 
+  // Fetch client-side no mount — bypassa o Router Cache do Next.js completamente.
+  // Garante que ao navegar de volta ao módulo, os dados são sempre frescos do banco.
+  useEffect(() => {
+    fetch("/api/contacts")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: RealtimeContact[] | null) => {
+        if (data) setContacts(data);
+      })
+      .catch(() => {});
+  }, []);
+
+  // Supabase Realtime — atualiza estado em tempo real enquanto o componente está montado
   useEffect(() => {
     const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    if (!anon) return; // sem key → só usa SSR + remount
+    if (!anon) return;
 
     const channel = supabaseBrowser
       .channel("contacts-rt")
@@ -43,7 +47,7 @@ export function useRealtimeContacts(initialContacts: RealtimeContact[]) {
             }
             if (payload.eventType === "UPDATE") {
               const c = payload.new as RealtimeContact;
-              return prev.map((x) => x.id === c.id ? { ...x, ...c } : x);
+              return prev.map((x) => (x.id === c.id ? { ...x, ...c } : x));
             }
             if (payload.eventType === "DELETE") {
               return prev.filter((x) => x.id !== (payload.old as { id: string }).id);
@@ -54,7 +58,9 @@ export function useRealtimeContacts(initialContacts: RealtimeContact[]) {
       )
       .subscribe();
 
-    return () => { supabaseBrowser.removeChannel(channel); };
+    return () => {
+      supabaseBrowser.removeChannel(channel);
+    };
   }, []);
 
   return [contacts, setContacts] as const;

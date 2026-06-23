@@ -116,16 +116,14 @@ export default function KanbanBoard({ contacts }: Props) {
 
     if (res.ok) {
       setToast({ message: `Movido para ${stageLabel}` });
-      // Não chama router.refresh() aqui — poderia causar re-render do KanbanBoard
-      // e interferir no estado durante uma sessão de drag. O staleTimes.dynamic=0
-      // garante que ao NAVEGAR para outro módulo e voltar, os dados são frescos do banco.
+      router.refresh(); // invalida Router Cache → outros módulos veem dados frescos
     } else {
       const errBody = await res.json().catch(() => ({})) as { error?: string };
       console.error("[Pipeline] PATCH /status falhou:", res.status, errBody);
       setCards((prev) => prev.map((c) => c.id === id ? { ...c, status: originalStatus } : c));
       setToast({ message: `Erro ao salvar (${res.status}): ${errBody.error ?? "tente novamente"}`, type: "error" });
     }
-  }, []);
+  }, [router]);
 
   // Attach global mouse listeners while dragging
   useEffect(() => {

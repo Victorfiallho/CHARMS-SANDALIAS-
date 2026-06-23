@@ -17,14 +17,6 @@ const nextConfig = {
     NEXT_PUBLIC_SUPABASE_URL: process.env.SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
   },
-  // Desabilita o Router Cache para rotas dinâmicas.
-  // Sem isso, o Next.js 14 cacheia o RSC payload no cliente por 30s mesmo
-  // com force-dynamic, fazendo a navegação entre módulos mostrar dados velhos.
-  experimental: {
-    staleTimes: {
-      dynamic: 0,
-    },
-  },
 };
 
 export default nextConfig;

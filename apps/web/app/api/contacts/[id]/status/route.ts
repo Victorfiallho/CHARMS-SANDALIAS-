@@ -15,11 +15,20 @@ export async function PATCH(
     return NextResponse.json({ error: "status inválido" }, { status: 400 });
   }
 
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("contacts")
     .update({ status })
-    .eq("id", params.id);
+    .eq("id", params.id)
+    .select("id, status")
+    .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ ok: true });
+  if (error) {
+    console.error("[PATCH /status] Supabase error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+  if (!data) {
+    console.error("[PATCH /status] Nenhuma linha atualizada para id:", params.id);
+    return NextResponse.json({ error: "contato não encontrado" }, { status: 404 });
+  }
+  return NextResponse.json({ ok: true, status: data.status });
 }

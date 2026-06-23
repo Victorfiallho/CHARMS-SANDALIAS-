@@ -84,6 +84,10 @@ export default function KanbanBoard({ contacts }: Props) {
   const overColRef     = useRef<string | null>(null);
   const ghostRef       = useRef<HTMLDivElement>(null);
   const colRefsMap     = useRef<Record<string, HTMLDivElement | null>>({});
+  // Ref espelho de cards — permite leitura síncrona dentro de callbacks sem
+  // depender de closures stale ou updaters assíncronos do useState
+  const cardsRef = useRef<Contact[]>(cards);
+  cardsRef.current = cards;
 
   const grouped = STAGES.reduce<Record<string, Contact[]>>((acc, s) => {
     acc[s.key] = cards.filter((c) => c.status === s.key);
@@ -93,16 +97,16 @@ export default function KanbanBoard({ contacts }: Props) {
   const handleDrop = useCallback(async (targetStatus: string) => {
     const id = dragIdRef.current;
     if (!id) return;
+
+    // Leitura síncrona via ref — sem risco de stale closure
+    const currentCard = cardsRef.current.find((c) => c.id === id);
+    if (!currentCard || currentCard.status === targetStatus) return;
+
+    const originalStatus = currentCard.status;
     const stageLabel = STAGES.find((s) => s.key === targetStatus)?.label ?? targetStatus;
 
-    // Captura o status original antes do update otimista
-    let originalStatus = targetStatus;
-    setCards((prev) => {
-      const card = prev.find((c) => c.id === id);
-      if (!card || card.status === targetStatus) return prev;
-      originalStatus = card.status;
-      return prev.map((c) => c.id === id ? { ...c, status: targetStatus } : c);
-    });
+    // Update otimista imediato
+    setCards((prev) => prev.map((c) => c.id === id ? { ...c, status: targetStatus } : c));
 
     const res = await fetch(`/api/contacts/${id}/status`, {
       method: "PATCH",
@@ -112,14 +116,16 @@ export default function KanbanBoard({ contacts }: Props) {
 
     if (res.ok) {
       setToast({ message: `Movido para ${stageLabel}` });
-      // Invalida o Router Cache para que outros módulos mostrem dados frescos.
-      // O novo hook (sem prop-sync) não reseta o estado local quando isso acontece.
-      router.refresh();
+      // Não chama router.refresh() aqui — poderia causar re-render do KanbanBoard
+      // e interferir no estado durante uma sessão de drag. O staleTimes.dynamic=0
+      // garante que ao NAVEGAR para outro módulo e voltar, os dados são frescos do banco.
     } else {
+      const errBody = await res.json().catch(() => ({})) as { error?: string };
+      console.error("[Pipeline] PATCH /status falhou:", res.status, errBody);
       setCards((prev) => prev.map((c) => c.id === id ? { ...c, status: originalStatus } : c));
-      setToast({ message: "Erro ao mover contato", type: "error" });
+      setToast({ message: `Erro ao salvar (${res.status}): ${errBody.error ?? "tente novamente"}`, type: "error" });
     }
-  }, [router]);
+  }, []);
 
   // Attach global mouse listeners while dragging
   useEffect(() => {

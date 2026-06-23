@@ -1,6 +1,8 @@
 import { supabase } from "@/lib/supabase";
 import SidebarNav from "./components/SidebarNav";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { data: contacts } = await supabase
     .from("contacts")

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useCallback, useRef, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useRealtimeContacts } from "@/hooks/useRealtimeContacts";
 import ConversationView from "./ConversationView";
 import NovoContatoModal from "./NovoContatoModal";
 import Toast from "./Toast";
@@ -69,7 +70,7 @@ function ChannelDot({ origem }: { origem: string }) {
 
 export default function KanbanBoard({ contacts }: Props) {
   const router = useRouter();
-  const [cards, setCards] = useState<Contact[]>(contacts);
+  const [cards, setCards] = useRealtimeContacts(contacts);
   const [draggingId, setDraggingId]   = useState<string | null>(null);
   const [ghostContact, setGhostContact] = useState<Contact | null>(null);
   const [overCol, setOverCol]         = useState<string | null>(null);

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { useRealtimeContacts } from "@/hooks/useRealtimeContacts";
 import ConversationView from "../components/ConversationView";
 
 type Contact = {
@@ -66,8 +67,9 @@ function Initials({ nome }: { nome: string }) {
 
 const CANAL_TABS = ["Todos", "WhatsApp", "Instagram"] as const;
 
-export default function InboxClient({ contacts, lastMessages }: Props) {
+export default function InboxClient({ contacts: initialContacts, lastMessages }: Props) {
   const router = useRouter();
+  const [contacts] = useRealtimeContacts(initialContacts);
   const [selected, setSelected] = useState<Contact | null>(null);
   const [canal, setCanal] = useState<typeof CANAL_TABS[number]>("Todos");
   const [search, setSearch] = useState("");

@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { useRealtimeContacts } from "@/hooks/useRealtimeContacts";
 import ConversationView from "../components/ConversationView";
 import NovoContatoModal from "../components/NovoContatoModal";
 import Toast from "../components/Toast";
@@ -70,7 +71,7 @@ const CANAL_TABS = ["Todos", "WhatsApp", "Instagram"] as const;
 
 export default function ContactsClient({ contacts: initialContacts }: Props) {
   const router = useRouter();
-  const [contacts, setContacts] = useState<Contact[]>(initialContacts);
+  const [contacts, setContacts] = useRealtimeContacts(initialContacts);
   const [search, setSearch] = useState("");
   const [canal, setCanal] = useState<typeof CANAL_TABS[number]>("Todos");
   const [statusFilter, setStatusFilter] = useState("todos");

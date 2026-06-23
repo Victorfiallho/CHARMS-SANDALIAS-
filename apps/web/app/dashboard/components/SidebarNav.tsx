@@ -2,13 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-
-type Props = {
-  stageCounts: Record<string, number>;
-  total: number;
-  totalWpp: number;
-  totalIg: number;
-};
+import Image from "next/image";
 
 const Icons = {
   pipeline: (
@@ -83,7 +77,7 @@ const NAV_GROUPS = [
   },
 ];
 
-export default function SidebarNav({ stageCounts, total }: Props) {
+export default function SidebarNav() {
   const pathname = usePathname();
   const isActive = (href: string) =>
     href === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(href);
@@ -91,12 +85,15 @@ export default function SidebarNav({ stageCounts, total }: Props) {
   return (
     <>
       {/* Logo */}
-      <div className="sidebar-logo">
-        <div className="sidebar-logo-mark">C</div>
-        <div className="sidebar-logo-text">
-          <div className="sidebar-logo-name">Charms</div>
-          <div className="sidebar-logo-sub">CRM</div>
-        </div>
+      <div className="sidebar-logo" style={{ justifyContent: "center", paddingBottom: "0.75rem" }}>
+        <Image
+          src="/logo-charms.png"
+          alt="Charms Sandálias"
+          width={140}
+          height={140}
+          style={{ width: 130, height: "auto", objectFit: "contain", mixBlendMode: "multiply" }}
+          priority
+        />
       </div>
 
       {/* Nav */}
@@ -115,33 +112,6 @@ export default function SidebarNav({ stageCounts, total }: Props) {
           </div>
         ))}
       </nav>
-
-      {/* Sumário de pipeline — compacto, no rodapé */}
-      <div style={{ marginTop: "auto", paddingTop: "0.75rem", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-        <div className="sidebar-section-label" style={{ marginTop: 0, marginBottom: "0.5rem" }}>
-          Pipeline
-        </div>
-        {[
-          { key: "novo",        label: "Novo",        color: "#6B7280" },
-          { key: "qualificado", label: "Qualificado", color: "#1D4ED8" },
-          { key: "negociacao",  label: "Negociação",  color: "#A16207" },
-          { key: "fechamento",  label: "Fechamento",  color: "#15803D" },
-          { key: "pos-venda",   label: "Pós-venda",   color: "#374151" },
-        ].map((s) => {
-          const pct = total ? Math.round((stageCounts[s.key] ?? 0) / total * 100) : 0;
-          return (
-            <div key={s.key} style={{ marginBottom: "0.4rem" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.15rem" }}>
-                <span style={{ fontSize: "0.68rem", color: "rgba(148,163,184,0.7)", fontWeight: 500 }}>{s.label}</span>
-                <span style={{ fontSize: "0.65rem", color: s.color, fontWeight: 700 }}>{stageCounts[s.key] ?? 0}</span>
-              </div>
-              <div style={{ height: 2, background: "rgba(255,255,255,0.06)", borderRadius: 99 }}>
-                <div style={{ height: "100%", width: `${pct}%`, background: s.color, borderRadius: 99 }} />
-              </div>
-            </div>
-          );
-        })}
-      </div>
     </>
   );
 }

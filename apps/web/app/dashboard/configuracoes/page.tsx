@@ -11,13 +11,13 @@ function Section({ title, icon, status, fields }: {
   fields: Field[];
 }) {
   return (
-    <div style={{ background: "white", borderRadius: 4, border: "1px solid #E5E7EB", padding: "1rem 1.25rem", marginBottom: "0.75rem" }}>
+    <div style={{ background: "white", borderRadius: 4, border: "1px solid #EDE5E2", padding: "1rem 1.25rem", marginBottom: "0.75rem" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
-          <div style={{ width: 30, height: 30, borderRadius: 4, background: "#F9FAFB", border: "1px solid #E5E7EB", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <div style={{ width: 30, height: 30, borderRadius: 4, background: "#FAF9F6", border: "1px solid #EDE5E2", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
             {icon}
           </div>
-          <h2 style={{ margin: 0, fontSize: "0.82rem", fontWeight: 700, color: "#111827" }}>{title}</h2>
+          <h2 style={{ margin: 0, fontSize: "0.82rem", fontWeight: 700, color: "#1A1010" }}>{title}</h2>
         </div>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: "0.68rem", fontWeight: 600, color: status === "configurado" ? "#15803D" : "#A16207" }}>
           <span style={{ width: 5, height: 5, borderRadius: "50%", background: "currentColor", display: "inline-block" }} />
@@ -28,7 +28,7 @@ function Section({ title, icon, status, fields }: {
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.625rem", marginBottom: "0.875rem" }}>
         {fields.map((f) => (
           <div key={f.label}>
-            <label style={{ display: "block", fontSize: "0.68rem", fontWeight: 600, color: "#6B7280", marginBottom: "0.25rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+            <label style={{ display: "block", fontSize: "0.68rem", fontWeight: 600, color: "#7A6868", marginBottom: "0.25rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
               {f.label}
             </label>
             <input
@@ -36,25 +36,14 @@ function Section({ title, icon, status, fields }: {
               defaultValue={f.value ?? ""}
               placeholder={f.placeholder}
               disabled
-              style={{
-                width: "100%", padding: "0.375rem 0.625rem",
-                border: "1px solid #E5E7EB", borderRadius: 4,
-                fontSize: "0.78rem", fontFamily: "inherit",
-                background: "#F9FAFB", color: "#9CA3AF",
-                boxSizing: "border-box",
-              }}
+              className="corp-input"
             />
           </div>
         ))}
       </div>
 
-      <div style={{ paddingTop: "0.75rem", borderTop: "1px solid #F3F4F6", display: "flex", justifyContent: "flex-end" }}>
-        <button disabled style={{
-          background: "#111827", color: "white", border: "none",
-          borderRadius: 4, padding: "0.35rem 0.875rem",
-          fontSize: "0.72rem", fontWeight: 600, cursor: "not-allowed",
-          opacity: 0.4, fontFamily: "inherit",
-        }}>
+      <div style={{ paddingTop: "0.75rem", borderTop: "1px solid #F5F2EF", display: "flex", justifyContent: "flex-end" }}>
+        <button disabled className="corp-btn corp-btn-primary" style={{ opacity: 0.4 }}>
           Salvar alterações
         </button>
       </div>
@@ -93,30 +82,25 @@ export default function ConfiguracoesPage() {
         </div>
       </header>
 
-      <div style={{ flex: 1, overflow: "auto", padding: "1.25rem", background: "#F9FAFB" }}>
+      <div style={{ flex: 1, overflow: "auto", padding: "1.25rem", background: "#FAF9F6" }}>
         <div style={{ maxWidth: 820, margin: "0 auto" }}>
 
           {/* Webhook URL */}
           <div style={{
-            background: "white", border: "1px solid #E5E7EB", borderRadius: 4,
+            background: "white", border: "1px solid #EDE5E2", borderRadius: 4,
             padding: "0.75rem 1rem", marginBottom: "0.75rem",
             display: "flex", alignItems: "center", gap: "0.75rem",
           }}>
-            <svg width="14" height="14" viewBox="0 0 20 20" fill="#1D4ED8" style={{ flexShrink: 0 }}>
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="#C38B90" style={{ flexShrink: 0 }}>
               <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/>
             </svg>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: "0.65rem", fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 3 }}>URL do Webhook</div>
-              <code style={{ fontSize: "0.75rem", color: "#1D4ED8", fontFamily: "ui-monospace, monospace" }}>
+              <div style={{ fontSize: "0.65rem", fontWeight: 600, color: "#9A7878", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 3 }}>URL do Webhook</div>
+              <code style={{ fontSize: "0.75rem", color: "#A67070", fontFamily: "ui-monospace, monospace" }}>
                 https://seudominio.com/api/webhook/whatsapp
               </code>
             </div>
-            <button disabled style={{
-              background: "#111827", color: "white", border: "none",
-              borderRadius: 4, padding: "0.28rem 0.625rem",
-              fontSize: "0.68rem", fontWeight: 600, cursor: "not-allowed",
-              opacity: 0.5, fontFamily: "inherit",
-            }}>
+            <button disabled className="corp-btn corp-btn-secondary" style={{ opacity: 0.5, fontSize: "0.68rem" }}>
               Copiar
             </button>
           </div>
@@ -141,7 +125,7 @@ export default function ConfiguracoesPage() {
           {/* Danger zone */}
           <div style={{ background: "white", borderRadius: 4, border: "1px solid #FECACA", padding: "0.875rem 1rem" }}>
             <h2 style={{ margin: "0 0 0.25rem", fontSize: "0.78rem", fontWeight: 700, color: "#DC2626" }}>Zona de perigo</h2>
-            <p style={{ margin: "0 0 0.75rem", fontSize: "0.72rem", color: "#9CA3AF" }}>Ações irreversíveis. Certifique-se antes de prosseguir.</p>
+            <p style={{ margin: "0 0 0.75rem", fontSize: "0.72rem", color: "#9A7878" }}>Ações irreversíveis. Certifique-se antes de prosseguir.</p>
             <div style={{ display: "flex", gap: "0.5rem" }}>
               <button disabled style={{
                 background: "white", color: "#DC2626", border: "1px solid #FECACA",

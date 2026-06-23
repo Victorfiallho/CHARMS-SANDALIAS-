@@ -18,8 +18,9 @@ const nextConfig = {
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
   },
   experimental: {
-    // TTL 0 no Router Cache para rotas dinâmicas: toda navegação busca RSC
-    // payload fresco do servidor em vez de servir cache de até 30s.
+    // TTL 0: toda navegação busca RSC payload fresco do servidor.
+    // Garante que Pipeline, Contatos e Relatórios sempre refletem o mesmo
+    // estado do banco — evita dessincronia entre módulos com cache stale.
     staleTimes: { dynamic: 0 },
   },
 };

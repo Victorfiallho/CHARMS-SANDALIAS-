@@ -192,9 +192,9 @@ export default function ConversationView({ contact, onClose, onUpdate }: Props) 
       }}>
         <div style={{
           width: 32, height: 32, borderRadius: 4,
-          background: `hsl(${hue},40%,45%)`,
+          background: "#FDF0F1",
           display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: "0.7rem", fontWeight: 700, color: "white", flexShrink: 0, letterSpacing: "-0.5px",
+          fontSize: "0.7rem", fontWeight: 500, color: "#C38B90", flexShrink: 0, letterSpacing: "-0.5px",
         }}>
           {initials}
         </div>
@@ -210,7 +210,7 @@ export default function ConversationView({ contact, onClose, onUpdate }: Props) 
           {visibleTags.length > 0 && (
             <div style={{ display: "flex", gap: 3, marginTop: 3, flexWrap: "wrap" }}>
               {visibleTags.slice(0, 3).map((t) => (
-                <span key={t} style={{ border: "1px solid #E5E7EB", color: "#6B7280", padding: "0 0.3rem", borderRadius: 3, fontSize: "0.6rem", fontWeight: 500, background: "#F9FAFB" }}>
+                <span key={t} style={{ border: "1px solid rgba(226,232,240,0.6)", color: "#64748B", padding: "0 0.3rem", borderRadius: 3, fontSize: "0.6rem", fontWeight: 400, background: "#F8FAFC" }}>
                   {t}
                 </span>
               ))}
@@ -251,7 +251,7 @@ export default function ConversationView({ contact, onClose, onUpdate }: Props) 
               <label style={{ display: "block", fontSize: "0.65rem", fontWeight: 600, color: "#6B7280", marginBottom: "0.2rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Nome</label>
               <input value={editNome} onChange={(e) => setEditNome(e.target.value)}
                 style={{ width: "100%", padding: "0.375rem 0.5rem", border: "1px solid #D1D5DB", borderRadius: 4, fontSize: "0.78rem", fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
-                onFocus={(e) => { e.target.style.borderColor = "#6B7280"; }}
+                onFocus={(e) => { e.target.style.borderColor = "#C38B90"; }}
                 onBlur={(e) => { e.target.style.borderColor = "#D1D5DB"; }}
               />
             </div>
@@ -259,7 +259,7 @@ export default function ConversationView({ contact, onClose, onUpdate }: Props) 
               <label style={{ display: "block", fontSize: "0.65rem", fontWeight: 600, color: "#6B7280", marginBottom: "0.2rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Tags</label>
               <input value={editTags} onChange={(e) => setEditTags(e.target.value)} placeholder="vip, urgente…"
                 style={{ width: "100%", padding: "0.375rem 0.5rem", border: "1px solid #D1D5DB", borderRadius: 4, fontSize: "0.78rem", fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
-                onFocus={(e) => { e.target.style.borderColor = "#6B7280"; }}
+                onFocus={(e) => { e.target.style.borderColor = "#C38B90"; }}
                 onBlur={(e) => { e.target.style.borderColor = "#D1D5DB"; }}
               />
             </div>
@@ -287,10 +287,10 @@ export default function ConversationView({ contact, onClose, onUpdate }: Props) 
           <button key={tab} onClick={() => setActiveTab(tab)} style={{
             padding: "0.45rem 1rem", border: "none", cursor: "pointer",
             fontFamily: "inherit", fontSize: "0.72rem",
-            fontWeight: activeTab === tab ? 700 : 500,
-            color: activeTab === tab ? "#111827" : "#9CA3AF",
+            fontWeight: activeTab === tab ? 600 : 400,
+            color: activeTab === tab ? "#2C1F1F" : "#B8A8A8",
             background: "none",
-            borderBottom: activeTab === tab ? "2px solid #111827" : "2px solid transparent",
+            borderBottom: activeTab === tab ? "2px solid #C38B90" : "2px solid transparent",
             transition: "all 0.1s",
           }}>
             {tab === "conversa" ? "Conversa" : "Notas"}
@@ -332,16 +332,15 @@ export default function ConversationView({ contact, onClose, onUpdate }: Props) 
                     <div key={msg.id} style={{ display: "flex", justifyContent: isOut ? "flex-end" : "flex-start", marginBottom: "0.35rem" }}>
                       <div style={{
                         maxWidth: "78%",
-                        background: isOut ? "#dcfce7" : "white",
-                        border: isOut ? "none" : "1px solid #e5e7eb",
-                        borderRadius: isOut ? "12px 12px 2px 12px" : "12px 12px 12px 2px",
+                        background: isOut ? "#F0E8E8" : "#F9F7F5",
+                        border: "none",
+                        borderRadius: isOut ? "8px 8px 2px 8px" : "8px 8px 8px 2px",
                         padding: "0.5rem 0.7rem",
-                        boxShadow: "0 1px 2px rgb(0 0 0 / 0.06)",
                       }}>
-                        <p style={{ margin: 0, fontSize: "0.85rem", lineHeight: 1.4, wordBreak: "break-word" }}>
+                        <p style={{ margin: 0, fontSize: "0.85rem", lineHeight: 1.4, wordBreak: "break-word", color: "#2C1F1F" }}>
                           {msg.conteudo}
                         </p>
-                        <div style={{ textAlign: "right", fontSize: "0.62rem", color: "#9ca3af", marginTop: "0.2rem" }}>
+                        <div style={{ textAlign: "right", fontSize: "0.62rem", color: isOut ? "#C8A8A8" : "#B8A8A8", marginTop: "0.2rem" }}>
                           {formatTime(msg.timestamp)}
                         </div>
                       </div>
@@ -356,7 +355,7 @@ export default function ConversationView({ contact, onClose, onUpdate }: Props) 
 
           <div style={{ padding: "0.75rem", borderTop: "1px solid #e5e7eb", background: "white", flexShrink: 0 }}>
             {sendError && (
-              <div style={{ fontSize: "0.75rem", color: "#ef4444", marginBottom: "0.4rem" }}>⚠️ {sendError}</div>
+              <div style={{ fontSize: "0.75rem", color: "#C38B90", marginBottom: "0.4rem" }}>{sendError}</div>
             )}
             <div style={{ display: "flex", gap: "0.5rem", alignItems: "flex-end" }}>
               <textarea
@@ -374,15 +373,15 @@ export default function ConversationView({ contact, onClose, onUpdate }: Props) 
                   fontSize: "0.82rem", fontFamily: "inherit",
                   outline: "none", transition: "border-color 0.1s",
                 }}
-                onFocus={(e) => { e.target.style.borderColor = "#6B7280"; }}
+                onFocus={(e) => { e.target.style.borderColor = "#C38B90"; }}
                 onBlur={(e) => { e.target.style.borderColor = "#D1D5DB"; }}
               />
               <button
                 onClick={send}
                 disabled={sending || !text.trim()}
                 style={{
-                  background: sending || !text.trim() ? "#E5E7EB" : "#111827",
-                  color: sending || !text.trim() ? "#9CA3AF" : "white",
+                  background: sending || !text.trim() ? "#F0E8E8" : "#C38B90",
+                  color: sending || !text.trim() ? "#C8A8A8" : "white",
                   border: "none", borderRadius: 4,
                   padding: "0.5rem 0.75rem",
                   fontSize: "1rem", cursor: sending || !text.trim() ? "not-allowed" : "pointer",
@@ -411,13 +410,13 @@ export default function ConversationView({ contact, onClose, onUpdate }: Props) 
             placeholder={`Anotações sobre ${contact.nome}...\n\nEx: Cliente muito interessado no modelo Havaianas Top. Prefere WhatsApp. Orçamento aprovado.`}
             style={{
               flex: 1, resize: "none",
-              border: "1.5px solid #e2e8f0", borderRadius: 10,
+              border: "1px solid #e2e8f0", borderRadius: 6,
               padding: "0.75rem", fontSize: "0.84rem", fontFamily: "inherit",
               lineHeight: 1.6, outline: "none", background: "white",
-              transition: "border-color 0.15s",
+              transition: "border-color 0.1s",
               minHeight: 200,
             }}
-            onFocus={(e) => { e.target.style.borderColor = "#3b82f6"; }}
+            onFocus={(e) => { e.target.style.borderColor = "#C38B90"; }}
             onBlur={(e) => { e.target.style.borderColor = "#e2e8f0"; saveNote(); }}
           />
           <p style={{ margin: "0.5rem 0 0", fontSize: "0.68rem", color: "#94a3b8" }}>

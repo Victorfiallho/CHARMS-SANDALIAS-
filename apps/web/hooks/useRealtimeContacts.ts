@@ -18,17 +18,6 @@ export type RealtimeContact = {
 export function useRealtimeContacts(initialContacts: RealtimeContact[]) {
   const [contacts, setContacts] = useState<RealtimeContact[]>(initialContacts);
 
-  // Fetch client-side no mount — bypassa o Router Cache do Next.js completamente.
-  // Garante que ao navegar de volta ao módulo, os dados são sempre frescos do banco.
-  useEffect(() => {
-    fetch("/api/contacts")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data: RealtimeContact[] | null) => {
-        if (data) setContacts(data);
-      })
-      .catch(() => {});
-  }, []);
-
   // Supabase Realtime — atualiza estado em tempo real enquanto o componente está montado
   useEffect(() => {
     const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;

@@ -3,6 +3,8 @@
 import { useCallback, useRef, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useRealtimeContacts } from "@/hooks/useRealtimeContacts";
+import { STAGES } from "@/lib/constants";
+import { fmtPhone, timeAgo } from "@/lib/utils";
 import ConversationView from "./ConversationView";
 import NovoContatoModal from "./NovoContatoModal";
 import Toast from "./Toast";
@@ -20,36 +22,14 @@ type Contact = {
 
 type Props = { contacts: Contact[] };
 
-const STAGES = [
-  { key: "novo",        label: "Novo",        color: "#6B7280" },
-  { key: "qualificado", label: "Qualificado", color: "#1D4ED8" },
-  { key: "negociacao",  label: "Negociação",  color: "#A16207" },
-  { key: "fechamento",  label: "Fechamento",  color: "#15803D" },
-  { key: "pos-venda",   label: "Pós-venda",   color: "#374151" },
-] as const;
-
-function timeAgo(iso: string | null) {
-  if (!iso) return "";
-  const h = Math.floor((Date.now() - new Date(iso).getTime()) / 3_600_000);
-  if (h < 1) return "agora";
-  if (h < 24) return `${h}h`;
-  return `${Math.floor(h / 24)}d`;
-}
-
-function fmtPhone(tel: string) {
-  const m = tel.match(/^(\d{2})(\d{2})(\d{4,5})(\d{4})$/);
-  return m ? `+${m[1]} (${m[2]}) ${m[3]}-${m[4]}` : tel;
-}
-
 function Avatar({ nome, size = 34 }: { nome: string; size?: number }) {
   const words = nome.trim().split(/\s+/);
   const initials = (words[0]?.[0] ?? "") + (words[1]?.[0] ?? "");
-  const hue = (nome.charCodeAt(0) * 47 + nome.charCodeAt(nome.length - 1) * 23) % 360;
   return (
     <div style={{
       width: size, height: size, borderRadius: "50%",
-      background: `hsl(${hue},55%,50%)`,
-      color: "white", fontWeight: 700, fontSize: size * 0.35,
+      background: "#FDF0F1",
+      color: "#C38B90", fontWeight: 500, fontSize: size * 0.35,
       display: "flex", alignItems: "center", justifyContent: "center",
       flexShrink: 0, letterSpacing: "-0.5px",
     }}>
@@ -61,7 +41,7 @@ function Avatar({ nome, size = 34 }: { nome: string; size?: number }) {
 function ChannelDot({ origem }: { origem: string }) {
   const isWpp = origem === "whatsapp";
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: "0.68rem", color: "#6B7280", fontWeight: 500 }}>
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: "0.68rem", color: "#7A6868", fontWeight: 500 }}>
       <span style={{ width: 5, height: 5, borderRadius: "50%", background: isWpp ? "#15803D" : "#9D174D", display: "inline-block", flexShrink: 0 }} />
       {isWpp ? "WhatsApp" : "Instagram"}
     </span>
@@ -232,16 +212,16 @@ export default function KanbanBoard({ contacts }: Props) {
     <div style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }}>
       {/* Sub-header */}
       <div style={{
-        background: "white", borderBottom: "1px solid #E5E7EB",
+        background: "white", borderBottom: "1px solid #EDE5E2",
         padding: "0 1.25rem", height: 40, flexShrink: 0,
         display: "flex", alignItems: "center", gap: "0.5rem",
       }}>
         {STAGES.map((s) => (
           <div key={s.key} style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
             <span style={{ width: 5, height: 5, borderRadius: "50%", background: s.color, display: "inline-block" }} />
-            <span style={{ fontSize: "0.68rem", fontWeight: 600, color: "#6B7280" }}>{s.label}</span>
+            <span style={{ fontSize: "0.68rem", fontWeight: 600, color: "#7A6868" }}>{s.label}</span>
             <span style={{ fontSize: "0.68rem", fontWeight: 700, color: s.color, marginLeft: 1 }}>{grouped[s.key].length}</span>
-            {s.key !== "pos-venda" && <span style={{ width: 1, height: 10, background: "#E5E7EB", margin: "0 0.25rem" }} />}
+            {s.key !== "pos-venda" && <span style={{ width: 1, height: 10, background: "#EDE5E2", margin: "0 0.25rem" }} />}
           </div>
         ))}
         <div style={{ marginLeft: "auto" }}>
@@ -289,19 +269,19 @@ export default function KanbanBoard({ contacts }: Props) {
                     >
                       {/* Nome + tempo */}
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.3rem" }}>
-                        <div style={{ fontWeight: 600, fontSize: "0.8rem", color: "#111827", lineHeight: 1.3, flex: 1, minWidth: 0, marginRight: 6, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        <div style={{ fontWeight: 600, fontSize: "0.8rem", color: "#1A1010", lineHeight: 1.3, flex: 1, minWidth: 0, marginRight: 6, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                           {contact.nome}
                         </div>
                         {contact.last_seen_at && (
-                          <span style={{ fontSize: "0.62rem", color: "#9CA3AF", flexShrink: 0 }}>
+                          <span style={{ fontSize: "0.62rem", color: "#9A7878", flexShrink: 0 }}>
                             {timeAgo(contact.last_seen_at)}
                           </span>
                         )}
                       </div>
 
                       {/* Contato */}
-                      <div style={{ fontSize: "0.68rem", color: "#9CA3AF", marginBottom: "0.35rem" }}>
-                        {contact.telefone ? fmtPhone(contact.telefone) : `@${contact.instagram_id}`}
+                      <div style={{ fontSize: "0.68rem", color: "#9A7878", marginBottom: "0.35rem" }}>
+                        {contact.telefone ? fmtPhone(contact.telefone) : contact.instagram_id ? `@${contact.instagram_id}` : "—"}
                       </div>
 
                       {/* Canal + tags */}
@@ -309,9 +289,9 @@ export default function KanbanBoard({ contacts }: Props) {
                         <ChannelDot origem={contact.origem} />
                         {visibleTags.map((t) => (
                           <span key={t} style={{
-                            border: "1px solid #E5E7EB", color: "#6B7280",
+                            border: "1px solid rgba(195,139,144,0.2)", color: "#7A6868",
                             padding: "0 0.3rem", borderRadius: 3,
-                            fontSize: "0.6rem", fontWeight: 500,
+                            fontSize: "0.6rem", fontWeight: 400, background: "#FAF9F6",
                           }}>
                             {t}
                           </span>
@@ -354,7 +334,7 @@ export default function KanbanBoard({ contacts }: Props) {
               borderRadius: 4,
               padding: "0.625rem 0.75rem",
               boxShadow: "0 16px 40px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.08)",
-              border: "1px solid #E5E7EB",
+              border: "1px solid #EDE5E2",
               borderLeft: `3px solid ${stage.color}`,
               opacity: 0.97,
               transform: "rotate(1.5deg) scale(1.02)",
@@ -362,11 +342,11 @@ export default function KanbanBoard({ contacts }: Props) {
               top: 0,
             }}
           >
-            <div style={{ fontWeight: 600, fontSize: "0.8rem", color: "#111827", marginBottom: "0.25rem" }}>
+            <div style={{ fontWeight: 600, fontSize: "0.8rem", color: "#1A1010", marginBottom: "0.25rem" }}>
               {ghostContact.nome}
             </div>
-            <div style={{ fontSize: "0.68rem", color: "#9CA3AF" }}>
-              {ghostContact.telefone ? fmtPhone(ghostContact.telefone) : `@${ghostContact.instagram_id}`}
+            <div style={{ fontSize: "0.68rem", color: "#9A7878" }}>
+              {ghostContact.telefone ? fmtPhone(ghostContact.telefone) : ghostContact.instagram_id ? `@${ghostContact.instagram_id}` : "—"}
             </div>
           </div>
         );

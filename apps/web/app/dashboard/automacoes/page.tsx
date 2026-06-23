@@ -69,7 +69,7 @@ const INITIAL_RULES: Rule[] = [
 const CANAL_COLOR: Record<string, string> = {
   whatsapp: "#15803D",
   instagram: "#9D174D",
-  ambos: "#1D4ED8",
+  ambos: "#7B84B8",
 };
 const CANAL_LABEL: Record<string, string> = {
   whatsapp: "WhatsApp",
@@ -115,11 +115,11 @@ export default function AutomacoesPage() {
           <div style={{ display: "flex", gap: "0.5rem" }}>
             {[
               { label: "Ativas", value: activeCount, color: "#15803D" },
-              { label: "Execuções totais", value: totalExec, color: "#1D4ED8" },
+              { label: "Execuções totais", value: totalExec, color: "#C38B90" },
             ].map((k) => (
-              <div key={k.label} style={{ background: "white", border: "1px solid #E5E7EB", borderRadius: 4, padding: "0.25rem 0.75rem", textAlign: "center" }}>
+              <div key={k.label} style={{ background: "white", border: "1px solid #EDE5E2", borderRadius: 4, padding: "0.25rem 0.75rem", textAlign: "center" }}>
                 <div style={{ fontSize: "1rem", fontWeight: 800, color: k.color, letterSpacing: "-0.04em" }}>{k.value}</div>
-                <div style={{ fontSize: "0.6rem", color: "#9CA3AF", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>{k.label}</div>
+                <div style={{ fontSize: "0.6rem", color: "#9A7878", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>{k.label}</div>
               </div>
             ))}
           </div>
@@ -132,14 +132,14 @@ export default function AutomacoesPage() {
         </div>
       </header>
 
-      <div style={{ flex: 1, overflow: "auto", padding: "1.25rem", background: "#F9FAFB" }}>
+      <div style={{ flex: 1, overflow: "auto", padding: "1.25rem", background: "#FAF9F6" }}>
 
         {/* Info banner */}
-        <div style={{ background: "white", border: "1px solid #E5E7EB", borderRadius: 4, padding: "0.625rem 1rem", marginBottom: "1rem", display: "flex", gap: "0.625rem", alignItems: "flex-start" }}>
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="#1D4ED8" style={{ flexShrink: 0, marginTop: 1 }}>
+        <div style={{ background: "white", border: "1px solid #EDE5E2", borderRadius: 4, padding: "0.625rem 1rem", marginBottom: "1rem", display: "flex", gap: "0.625rem", alignItems: "flex-start" }}>
+          <svg width="14" height="14" viewBox="0 0 20 20" fill="#C38B90" style={{ flexShrink: 0, marginTop: 1 }}>
             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/>
           </svg>
-          <span style={{ fontSize: "0.72rem", color: "#374151" }}>
+          <span style={{ fontSize: "0.72rem", color: "#4A3535" }}>
             As automações abaixo serão executadas pelo worker quando o webhook da Meta estiver ativo. Ative/desative individualmente sem afetar as demais.
           </span>
         </div>
@@ -147,40 +147,40 @@ export default function AutomacoesPage() {
         <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
           {rules.map((rule) => (
             <div key={rule.id} style={{
-              background: "white", border: "1px solid #E5E7EB", borderRadius: 4,
-              padding: "0.875rem 1rem", borderLeft: `3px solid ${rule.enabled ? CANAL_COLOR[rule.canal] : "#E5E7EB"}`,
+              background: "white", border: "1px solid #EDE5E2", borderRadius: 4,
+              padding: "0.875rem 1rem", borderLeft: `2px solid ${rule.enabled ? CANAL_COLOR[rule.canal] : "#EDE5E2"}`,
               opacity: rule.enabled ? 1 : 0.65, transition: "all 0.1s",
             }}>
               <div style={{ display: "flex", alignItems: "flex-start", gap: "0.875rem" }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   {/* Header */}
                   <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem", flexWrap: "wrap" }}>
-                    <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "#111827" }}>{rule.name}</span>
+                    <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "#1A1010" }}>{rule.name}</span>
                     <span style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: "0.62rem", color: CANAL_COLOR[rule.canal], fontWeight: 600 }}>
                       <span style={{ width: 4, height: 4, borderRadius: "50%", background: "currentColor", display: "inline-block" }} />
                       {CANAL_LABEL[rule.canal]}
                     </span>
                     {rule.executions > 0 && (
-                      <span style={{ fontSize: "0.62rem", color: "#9CA3AF" }}>{rule.executions} execuções</span>
+                      <span style={{ fontSize: "0.62rem", color: "#9A7878" }}>{rule.executions} execuções</span>
                     )}
                   </div>
 
                   {/* Trigger + Action */}
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
                     <div style={{ display: "flex", gap: "0.375rem", alignItems: "flex-start" }}>
-                      <span style={{ color: "#6B7280", flexShrink: 0, marginTop: 1 }}><TriggerIcon /></span>
+                      <span style={{ color: "#7A6868", flexShrink: 0, marginTop: 1 }}><TriggerIcon /></span>
                       <div>
-                        <div style={{ fontSize: "0.6rem", fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 2 }}>
+                        <div style={{ fontSize: "0.6rem", fontWeight: 600, color: "#9A7878", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 2 }}>
                           Gatilho · {rule.delay}
                         </div>
-                        <div style={{ fontSize: "0.72rem", color: "#374151" }}>{rule.trigger}</div>
+                        <div style={{ fontSize: "0.72rem", color: "#4A3535" }}>{rule.trigger}</div>
                       </div>
                     </div>
                     <div style={{ display: "flex", gap: "0.375rem", alignItems: "flex-start" }}>
-                      <span style={{ color: "#6B7280", flexShrink: 0, marginTop: 1 }}><ActionIcon /></span>
+                      <span style={{ color: "#7A6868", flexShrink: 0, marginTop: 1 }}><ActionIcon /></span>
                       <div>
-                        <div style={{ fontSize: "0.6rem", fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 2 }}>Ação</div>
-                        <div style={{ fontSize: "0.72rem", color: "#374151", lineHeight: 1.4 }}>{rule.action}</div>
+                        <div style={{ fontSize: "0.6rem", fontWeight: 600, color: "#9A7878", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 2 }}>Ação</div>
+                        <div style={{ fontSize: "0.72rem", color: "#4A3535", lineHeight: 1.4 }}>{rule.action}</div>
                       </div>
                     </div>
                   </div>
@@ -192,18 +192,18 @@ export default function AutomacoesPage() {
                     onClick={() => toggle(rule.id)}
                     style={{
                       width: 36, height: 20, borderRadius: 10, border: "none", cursor: "pointer",
-                      background: rule.enabled ? "#111827" : "#E5E7EB",
-                      position: "relative", transition: "background 0.15s",
+                      background: rule.enabled ? "#C38B90" : "#EDE5E2",
+                      position: "relative", transition: "background 0.1s",
                     }}
                     title={rule.enabled ? "Desativar" : "Ativar"}
                   >
                     <span style={{
                       position: "absolute", top: 3, left: rule.enabled ? 19 : 3,
                       width: 14, height: 14, borderRadius: "50%", background: "white",
-                      transition: "left 0.15s",
+                      transition: "left 0.1s",
                     }} />
                   </button>
-                  <span style={{ fontSize: "0.58rem", color: rule.enabled ? "#15803D" : "#9CA3AF", fontWeight: 600 }}>
+                  <span style={{ fontSize: "0.58rem", color: rule.enabled ? "#15803D" : "#9A7878", fontWeight: 600 }}>
                     {rule.enabled ? "On" : "Off"}
                   </span>
                 </div>
@@ -212,7 +212,7 @@ export default function AutomacoesPage() {
           ))}
         </div>
 
-        <p style={{ fontSize: "0.68rem", color: "#9CA3AF", marginTop: "1rem", textAlign: "center" }}>
+        <p style={{ fontSize: "0.68rem", color: "#9A7878", marginTop: "1rem", textAlign: "center" }}>
           Criação e edição de regras disponível na Fase 2 — integração com webhook Meta ativo.
         </p>
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import ConversationView from "./ConversationView";
 import NovoContatoModal from "./NovoContatoModal";
 import Toast from "./Toast";
@@ -67,6 +68,7 @@ function ChannelDot({ origem }: { origem: string }) {
 }
 
 export default function KanbanBoard({ contacts }: Props) {
+  const router = useRouter();
   const [cards, setCards] = useState<Contact[]>(contacts);
   const [draggingId, setDraggingId]   = useState<string | null>(null);
   const [ghostContact, setGhostContact] = useState<Contact | null>(null);
@@ -101,9 +103,9 @@ export default function KanbanBoard({ contacts }: Props) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status: targetStatus }),
     });
-    if (res.ok) setToast({ message: `Movido para ${stageLabel}` });
+    if (res.ok) { setToast({ message: `Movido para ${stageLabel}` }); router.refresh(); }
     else setToast({ message: "Erro ao mover contato", type: "error" });
-  }, []);
+  }, [router]);
 
   // Attach global mouse listeners while dragging
   useEffect(() => {
@@ -203,7 +205,8 @@ export default function KanbanBoard({ contacts }: Props) {
   const handleCreated = useCallback((contact: Contact) => {
     setCards((prev) => [contact, ...prev]);
     setToast({ message: `${contact.nome} adicionado ao pipeline` });
-  }, []);
+    router.refresh();
+  }, [router]);
 
   const stageOf = (key: string) => STAGES.find((s) => s.key === key) ?? STAGES[0];
 

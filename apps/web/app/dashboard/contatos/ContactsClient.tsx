@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import ConversationView from "../components/ConversationView";
 import NovoContatoModal from "../components/NovoContatoModal";
 import Toast from "../components/Toast";
@@ -68,6 +69,7 @@ type Props = { contacts: Contact[] };
 const CANAL_TABS = ["Todos", "WhatsApp", "Instagram"] as const;
 
 export default function ContactsClient({ contacts: initialContacts }: Props) {
+  const router = useRouter();
   const [contacts, setContacts] = useState<Contact[]>(initialContacts);
   const [search, setSearch] = useState("");
   const [canal, setCanal] = useState<typeof CANAL_TABS[number]>("Todos");
@@ -95,12 +97,14 @@ export default function ContactsClient({ contacts: initialContacts }: Props) {
   const handleUpdate = useCallback((updated: Contact) => {
     setContacts((prev) => prev.map((c) => c.id === updated.id ? { ...c, ...updated } : c));
     setSelected((prev) => prev?.id === updated.id ? { ...prev, ...updated } as Contact : prev);
-  }, []);
+    router.refresh();
+  }, [router]);
 
   const handleCreated = useCallback((contact: Contact) => {
     setContacts((prev) => [contact, ...prev]);
     setToast({ message: `${contact.nome} adicionado com sucesso` });
-  }, []);
+    router.refresh();
+  }, [router]);
 
   return (
     <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>

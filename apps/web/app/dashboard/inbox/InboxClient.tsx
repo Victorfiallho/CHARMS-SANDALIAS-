@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import ConversationView from "../components/ConversationView";
 
 type Contact = {
@@ -66,6 +67,7 @@ function Initials({ nome }: { nome: string }) {
 const CANAL_TABS = ["Todos", "WhatsApp", "Instagram"] as const;
 
 export default function InboxClient({ contacts, lastMessages }: Props) {
+  const router = useRouter();
   const [selected, setSelected] = useState<Contact | null>(null);
   const [canal, setCanal] = useState<typeof CANAL_TABS[number]>("Todos");
   const [search, setSearch] = useState("");
@@ -209,8 +211,8 @@ export default function InboxClient({ contacts, lastMessages }: Props) {
           contact={{ ...selected, stageColor: STATUS_COLOR[selected.status] }}
           onClose={() => setSelected(null)}
           onUpdate={(updated) => {
-            // reflect name/tag changes in the list if needed — no-op here
             void updated;
+            router.refresh();
           }}
         />
       ) : (

@@ -15,4 +15,10 @@ if (!url || !key) {
 
 export const supabase = createClient(url, key, {
   auth: { persistSession: false },
+  global: {
+    // Garante que o Next.js Data Cache nunca sirva respostas stale do Supabase.
+    // Sem isso, mesmo com force-dynamic o Next.js pode cachear fetch() internamente.
+    fetch: (input: RequestInfo | URL, init?: RequestInit) =>
+      fetch(input, { ...init, cache: "no-store" }),
+  },
 });

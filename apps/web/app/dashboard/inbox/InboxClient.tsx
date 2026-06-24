@@ -4,6 +4,8 @@ import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useRealtimeContacts } from "@/hooks/useRealtimeContacts";
 import ConversationView from "../components/ConversationView";
+import { STATUS_COLOR, STATUS_LABEL } from "@/lib/constants";
+import { timeAgo } from "@/lib/utils";
 
 type Contact = {
   id: string;
@@ -28,25 +30,6 @@ type Props = {
   contacts: Contact[];
   lastMessages: LastMsg[];
 };
-
-const STATUS_COLOR: Record<string, string> = {
-  novo: "#6B7280", qualificado: "#1D4ED8", negociacao: "#A16207",
-  fechamento: "#15803D", "pos-venda": "#374151",
-};
-const STATUS_LABEL: Record<string, string> = {
-  novo: "Novo", qualificado: "Qualificado", negociacao: "Negociação",
-  fechamento: "Fechamento", "pos-venda": "Pós-venda",
-};
-
-function timeAgo(iso: string) {
-  const ms = Date.now() - new Date(iso).getTime();
-  const m = Math.floor(ms / 60_000);
-  if (m < 1) return "agora";
-  if (m < 60) return `${m}min`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h`;
-  return `${Math.floor(h / 24)}d`;
-}
 
 function Initials({ nome }: { nome: string }) {
   const words = nome.trim().split(/\s+/);
@@ -119,7 +102,7 @@ export default function InboxClient({ contacts: initialContacts, lastMessages }:
               />
             </div>
             {inbound > 0 && (
-              <span style={{ background: "#1D4ED8", color: "white", fontSize: "0.6rem", fontWeight: 700, padding: "0.1rem 0.35rem", borderRadius: 99, flexShrink: 0 }}>
+              <span style={{ background: "#C38B90", color: "white", fontSize: "0.6rem", fontWeight: 700, padding: "0.1rem 0.35rem", borderRadius: 99, flexShrink: 0 }}>
                 {inbound}
               </span>
             )}
@@ -159,9 +142,9 @@ export default function InboxClient({ contacts: initialContacts, lastMessages }:
                 style={{
                   padding: "0.625rem 0.75rem", cursor: "pointer",
                   borderBottom: "1px solid #F3F4F6",
-                  background: isSelected ? "#EFF6FF" : isInbound ? "#FAFAFA" : "white",
+                  background: isSelected ? "#FDF0F1" : isInbound ? "#FAFAFA" : "white",
                   transition: "background 0.1s",
-                  borderLeft: isInbound ? "2px solid #1D4ED8" : "2px solid transparent",
+                  borderLeft: isInbound ? "2px solid #C38B90" : "2px solid transparent",
                 }}
                 onMouseEnter={(e) => { if (!isSelected) (e.currentTarget as HTMLElement).style.background = "#F9FAFB"; }}
                 onMouseLeave={(e) => { if (!isSelected) (e.currentTarget as HTMLElement).style.background = isInbound ? "#FAFAFA" : "white"; }}

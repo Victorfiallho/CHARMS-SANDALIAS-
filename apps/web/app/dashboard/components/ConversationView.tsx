@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { STAGES } from "@/lib/constants";
 
 type Contact = {
   id: string;
@@ -28,14 +29,6 @@ type Props = {
   onClose: () => void;
   onUpdate?: (contact: Contact) => void;
 };
-
-const STAGES = [
-  { key: "novo",        label: "Novo",        color: "#6B7280" },
-  { key: "qualificado", label: "Qualificado", color: "#1D4ED8" },
-  { key: "negociacao",  label: "Negociação",  color: "#A16207" },
-  { key: "fechamento",  label: "Fechamento",  color: "#15803D" },
-  { key: "pos-venda",   label: "Pós-venda",   color: "#374151" },
-];
 
 function formatTime(iso: string) {
   return new Date(iso).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
@@ -173,7 +166,7 @@ export default function ConversationView({ contact, onClose, onUpdate }: Props) 
 
   const canalColor = contact.origem === "whatsapp" ? "#15803D" : "#9D174D";
   const canalLabel = contact.origem === "whatsapp" ? "WhatsApp" : "Instagram";
-  const accentColor = contact.stageColor ?? "#3b82f6";
+  const accentColor = contact.stageColor ?? "#9E8E8A";
   const initials = contact.nome.trim().split(/\s+/).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
   const hue = (contact.nome.charCodeAt(0) * 47 + contact.nome.charCodeAt(contact.nome.length - 1) * 23) % 360;
   const visibleTags = (contact.tags ?? []).filter((t) => t !== "demo");

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { supabase } from "@/lib/supabase";
 
 const VALID = ["novo", "qualificado", "negociacao", "fechamento", "pos-venda"] as const;
@@ -30,5 +31,8 @@ export async function PATCH(
     console.error("[PATCH /status] Nenhuma linha atualizada para id:", params.id);
     return NextResponse.json({ error: "contato não encontrado" }, { status: 404 });
   }
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/contatos");
+  revalidatePath("/dashboard/relatorios");
   return NextResponse.json({ ok: true, status: data.status });
 }

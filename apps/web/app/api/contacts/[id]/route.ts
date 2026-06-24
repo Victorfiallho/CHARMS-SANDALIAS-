@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { supabase } from "@/lib/supabase";
 
 export async function PATCH(
@@ -23,5 +24,8 @@ export async function PATCH(
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/contatos");
+  revalidatePath("/dashboard/relatorios");
   return NextResponse.json(data);
 }

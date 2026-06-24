@@ -134,6 +134,54 @@ const CONTACTS = [
   },
 ];
 
+// ── Produtos reais do site sandaliascharms.com.br ─────────────────
+const BASE = "https://images.tcdn.com.br/img/img_prod/1224602/";
+const img = (file: string) => BASE + file;
+
+// Fallbacks por modelo para variações de cor sem URL própria
+const BARB_IMG     = img("sandlia_brbara_vermelho_salto_baixo_1_20260505105648_fb3ef1ce3123.jpg");
+const ZOUK_IMG     = img("sandlia_zouk_caramelo_1_20260304183637_f30e8877ce38.jpg");
+const ZOUK_SB_IMG  = img("sandlia_zouk_caramelo_salto_baixo_1_20260304183247_05cb54d034cd.jpg");
+
+const PRODUCTS = [
+  // Lançamentos
+  { nome: "Sandália Paola Prata",                categoria: "Lançamentos",   cor: "Prata",         cor_hex: "#B8B8B8", preco: 289.00, preco_pix: 277.44, numeracao: "33-40", disponivel: true,  destaque: true,  sku: "PAOLA-PRT",      imagem_url: img("sandlia_paola_prata_1_20260304180540_d351bebc8a35.jpg") },
+  { nome: "Sandália Paola Preto",                categoria: "Lançamentos",   cor: "Preto",         cor_hex: "#1A1010", preco: 269.00, preco_pix: 258.24, numeracao: "33-40", disponivel: true,  destaque: false, sku: "PAOLA-PTO",      imagem_url: img("sandalia_paola_43_1_4b8f80656d9554675eccd3c5f9512e83.jpg") },
+  { nome: "Sandália Paola Nude Salto Baixo",     categoria: "Lançamentos",   cor: "Nude",          cor_hex: "#F0D9C0", preco: 269.00, preco_pix: 258.24, numeracao: "33-40", disponivel: true,  destaque: false, sku: "PAOLA-NUD-SB",   imagem_url: img("sandlia_paola_prata_1_20260304180540_d351bebc8a35.jpg") },
+  { nome: "Sandália Paola Marsala",              categoria: "Lançamentos",   cor: "Marsala",       cor_hex: "#8B3A3A", preco: 299.00, preco_pix: 287.04, numeracao: "33-40", disponivel: true,  destaque: true,  sku: "PAOLA-MAR",      imagem_url: img("sandlia_paola_marsala_1_20260505110038_a82dd286d911.jpg") },
+  { nome: "Sandália Paola Marsala Salto Baixo",  categoria: "Lançamentos",   cor: "Marsala",       cor_hex: "#8B3A3A", preco: 299.00, preco_pix: 287.04, numeracao: "33-40", disponivel: true,  destaque: true,  sku: "PAOLA-MAR-SB",   imagem_url: img("sandlia_paola_marsala_salto_baixo_1_20260505110516_e51a0479467f.jpg") },
+  { nome: "Sandália Zouk Caramelo",              categoria: "Lançamentos",   cor: "Caramelo",      cor_hex: "#C17F24", preco: 289.00, preco_pix: 277.44, numeracao: "33-40", disponivel: true,  destaque: true,  sku: "ZOUK-CAR",       imagem_url: ZOUK_IMG },
+  { nome: "Sandália Zouk Caramelo Salto Baixo",  categoria: "Lançamentos",   cor: "Caramelo",      cor_hex: "#C17F24", preco: 289.00, preco_pix: 277.44, numeracao: "33-40", disponivel: true,  destaque: true,  sku: "ZOUK-CAR-SB",    imagem_url: ZOUK_SB_IMG },
+  { nome: "Sandália Laura Salto Baixo Dourada",  categoria: "Lançamentos",   cor: "Dourado",       cor_hex: "#C5A028", preco: 289.00, preco_pix: 277.44, numeracao: "33-40", disponivel: true,  destaque: true,  sku: "LAURA-DOU-SB",   imagem_url: img("sandlia_laura_salto_baixo_dourada_1_20260305091450_fbb07f3c49d2.jpg") },
+  { nome: "Sandália Bárbara Vermelho Salto Baixo", categoria: "Lançamentos", cor: "Vermelho",      cor_hex: "#C41E3A", preco: 299.00, preco_pix: 287.04, numeracao: "33-39", disponivel: true,  destaque: true,  sku: "BARB-VRM-SB",    imagem_url: BARB_IMG },
+  { nome: "Sandália Flávia Caramelo",            categoria: "Lançamentos",   cor: "Caramelo",      cor_hex: "#C17F24", preco: 299.00, preco_pix: 287.04, numeracao: "33-40", disponivel: true,  destaque: true,  sku: "FLAV-CAR",       imagem_url: img("sandlia_flvia_caramelo_1_20260505105206_5f5af14abc4b.jpg") },
+  { nome: "Sandália Isabela Nude Salto Baixo",   categoria: "Lançamentos",   cor: "Nude",          cor_hex: "#F0D9C0", preco: 299.00, preco_pix: 287.04, numeracao: "33-39", disponivel: true,  destaque: true,  sku: "ISAB-NUD-SB",    imagem_url: img("sandlia_isabela_nude_salto_baixo_1_20260429113259_b1fa2ac62a97.jpg") },
+  { nome: "Sandália Bia Marrom",                 categoria: "Lançamentos",   cor: "Marrom",        cor_hex: "#795548", preco: 299.00, preco_pix: 287.04, numeracao: "33-39", disponivel: true,  destaque: true,  sku: "BIA-MAR",        imagem_url: img("sandlia_bia_marrom_1_20260429113542_51369b426eb0.jpg") },
+  // Mais Vendidos
+  { nome: "Sandália Duas Tiras Nude",            categoria: "Mais Vendidos", cor: "Nude",          cor_hex: "#F0D9C0", preco: 249.00, preco_pix: 239.04, numeracao: "33-40", disponivel: true,  destaque: true,  sku: "DT-NUD",         imagem_url: img("sandalia_duas_tiras_23_1_93b5a61684bc5343a45b6590d0f476b6.jpg") },
+  { nome: "Sandália Duas Tiras Nude Salto Baixo",categoria: "Mais Vendidos", cor: "Nude",          cor_hex: "#F0D9C0", preco: 249.00, preco_pix: 239.04, numeracao: "33-40", disponivel: true,  destaque: true,  sku: "DT-NUD-SB",      imagem_url: img("duas_tiras_salto_baixo_41_1_4e2afe5d9388ffa4c940636de383d05e.jpg") },
+  { nome: "Sandália Duas Tiras Preto",           categoria: "Mais Vendidos", cor: "Preto",         cor_hex: "#1A1010", preco: 249.00, preco_pix: 239.04, numeracao: "33-40", disponivel: true,  destaque: true,  sku: "DT-PTO",         imagem_url: img("sandalia_duas_tiras_31_1_ac5d9812d775a69850660db71b054b57.jpg") },
+  { nome: "Sandália Duas Tiras Preto Salto Baixo", categoria: "Mais Vendidos", cor: "Preto",       cor_hex: "#1A1010", preco: 249.00, preco_pix: 239.04, numeracao: "33-40", disponivel: true,  destaque: true,  sku: "DT-PTO-SB",      imagem_url: img("sandalia_duas_tiras_salto_baixo_33_1_be2873b55a96c6c3105f80883db062c5.jpg") },
+  { nome: "Sandália Bárbara Nude",               categoria: "Mais Vendidos", cor: "Nude",          cor_hex: "#F0D9C0", preco: 269.00, preco_pix: 258.24, numeracao: "33-39", disponivel: true,  destaque: true,  sku: "BARB-NUD",       imagem_url: BARB_IMG },
+  { nome: "Sandália Bárbara Nude Salto Baixo",   categoria: "Mais Vendidos", cor: "Nude",          cor_hex: "#F0D9C0", preco: 269.00, preco_pix: 258.24, numeracao: "33-39", disponivel: true,  destaque: true,  sku: "BARB-NUD-SB",    imagem_url: BARB_IMG },
+  { nome: "Sandália Bárbara Preto",              categoria: "Mais Vendidos", cor: "Preto",         cor_hex: "#1A1010", preco: 269.00, preco_pix: 258.24, numeracao: "33-39", disponivel: true,  destaque: false, sku: "BARB-PTO",       imagem_url: BARB_IMG },
+  { nome: "Sandália Bárbara Preto Salto Baixo",  categoria: "Mais Vendidos", cor: "Preto",         cor_hex: "#1A1010", preco: 269.00, preco_pix: 258.24, numeracao: "33-39", disponivel: true,  destaque: true,  sku: "BARB-PTO-SB",    imagem_url: BARB_IMG },
+  { nome: "Sandália Zouk Nude",                  categoria: "Mais Vendidos", cor: "Nude",          cor_hex: "#F0D9C0", preco: 269.00, preco_pix: 258.24, numeracao: "33-40", disponivel: true,  destaque: false, sku: "ZOUK-NUD",       imagem_url: ZOUK_IMG },
+  { nome: "Sandália Zouk Nude Salto Baixo",      categoria: "Mais Vendidos", cor: "Nude",          cor_hex: "#F0D9C0", preco: 269.00, preco_pix: 258.24, numeracao: "33-40", disponivel: true,  destaque: true,  sku: "ZOUK-NUD-SB",    imagem_url: ZOUK_SB_IMG },
+  { nome: "Sandália Zouk Preto Suede",           categoria: "Mais Vendidos", cor: "Preto Suede",   cor_hex: "#2C2C2C", preco: 269.00, preco_pix: 258.24, numeracao: "33-40", disponivel: true,  destaque: false, sku: "ZOUK-PTO-SUD",   imagem_url: ZOUK_IMG },
+  { nome: "Sandália Zouk Preto Suede Salto Baixo", categoria: "Mais Vendidos", cor: "Preto Suede", cor_hex: "#2C2C2C", preco: 269.00, preco_pix: 258.24, numeracao: "33-40", disponivel: true,  destaque: true,  sku: "ZOUK-PTO-SUD-SB",imagem_url: ZOUK_SB_IMG },
+  // Coleção Sensações
+  { nome: "Sandália Flávia Caramelo Salto Baixo",categoria: "Sensações",     cor: "Caramelo",      cor_hex: "#C17F24", preco: 299.00, preco_pix: 287.04, numeracao: "33-40", disponivel: true,  destaque: true,  sku: "FLAV-CAR-SB",    imagem_url: img("sandlia_flvia_caramelo_salto_baixo_1_20260505105456_45b7c729f73d.jpg") },
+  { nome: "Sandália Isabela Nude",               categoria: "Sensações",     cor: "Nude",          cor_hex: "#F0D9C0", preco: 299.00, preco_pix: 287.04, numeracao: "33-39", disponivel: true,  destaque: false, sku: "ISAB-NUD",       imagem_url: img("sandlia_isabela_nude_1_20260429113152_9c54bbfa32bf.jpg") },
+  // Coleção Inesquecível
+  { nome: "Sandália Laura Dourada",              categoria: "Inesquecível",  cor: "Dourado",       cor_hex: "#C5A028", preco: 289.00, preco_pix: 277.44, numeracao: "33-40", disponivel: true,  destaque: false, sku: "LAURA-DOU",      imagem_url: img("sandlia_laura_dourada_1_20260305091019_aa512b70b7d9.jpg") },
+  { nome: "Sandália Lara Nude Brilhante",        categoria: "Inesquecível",  cor: "Nude Brilhante",cor_hex: "#EDD9B8", preco: 289.00, preco_pix: 277.44, numeracao: "33-40", disponivel: true,  destaque: false, sku: "LARA-NUB",       imagem_url: img("sandlia_lara_nude_brilhante_1_20260305100739_00f046b8ebb5.jpg") },
+  { nome: "Sandália Lara Nude Brilhante Salto Baixo", categoria: "Inesquecível", cor: "Nude Brilhante", cor_hex: "#EDD9B8", preco: 289.00, preco_pix: 277.44, numeracao: "33-40", disponivel: true, destaque: false, sku: "LARA-NUB-SB", imagem_url: img("sandlia_lara_salto_baixo_nude_brilhante_1_20260305101525_b24281aeaac7.jpg") },
+  { nome: "Sandália Lara Preto",                 categoria: "Inesquecível",  cor: "Preto",         cor_hex: "#1A1010", preco: 299.00, preco_pix: 287.04, numeracao: "33-40", disponivel: true,  destaque: false, sku: "LARA-PTO",       imagem_url: img("sandlia_lara_preto_1_20260429113952_6ce62d832216.jpg") },
+  { nome: "Sandália Lara Preto Salto Baixo",     categoria: "Inesquecível",  cor: "Preto",         cor_hex: "#1A1010", preco: 299.00, preco_pix: 287.04, numeracao: "33-40", disponivel: false, destaque: false, sku: "LARA-PTO-SB",    imagem_url: img("sandlia_lara_preto_salto_baixo_1_20260429113850_7ac165796b1f.jpg") },
+  { nome: "Sandália Isis Preta/Prata",           categoria: "Inesquecível",  cor: "Preto/Prata",   cor_hex: "#444444", preco: 289.00, preco_pix: 277.44, numeracao: "33-39", disponivel: true,  destaque: false, sku: "ISIS-PTO-PRT",   imagem_url: img("sandlia_isis_pretaprata_1_20260304181432_163d2c7f3002.jpg") },
+];
+
 // ── Helpers ───────────────────────────────────────────────────────
 function daysAgo(n: number) {
   const d = new Date();
@@ -152,7 +200,6 @@ async function run() {
 
   if (CLEAN) {
     console.log("🧹 Limpando dados de demo anteriores...");
-    // Busca IDs de contatos com tag "demo"
     const { data: demoContacts } = await supabase
       .from("contacts")
       .select("id")
@@ -162,10 +209,13 @@ async function run() {
       const ids = demoContacts.map((c: { id: string }) => c.id);
       await supabase.from("messages").delete().in("contact_id", ids);
       await supabase.from("contacts").delete().in("id", ids);
-      console.log(`   Removidos ${ids.length} contatos e suas mensagens.\n`);
+      console.log(`   Removidos ${ids.length} contatos e suas mensagens.`);
     } else {
-      console.log("   Nenhum dado de demo encontrado.\n");
+      console.log("   Nenhum contato demo encontrado.");
     }
+
+    await supabase.from("products").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+    console.log("   Produtos removidos.\n");
   }
 
   let created = 0;
@@ -217,9 +267,21 @@ async function run() {
     console.log(`   ✅ [${canal}] ${c.nome.padEnd(22)} → ${c.status}`);
   }
 
+  // Produtos — upsert por SKU para ser idempotente
+  console.log("\n🛍️  Inserindo produtos...");
+  const { error: pErr } = await supabase
+    .from("products")
+    .upsert(PRODUCTS, { onConflict: "sku" });
+  if (pErr) {
+    console.error(`   ❌ Erro nos produtos: ${pErr.message}`);
+  } else {
+    console.log(`   ✅ ${PRODUCTS.length} produtos inseridos/atualizados`);
+  }
+
   console.log(`\n📊 Resultado:`);
   console.log(`   Contatos:  ${created}`);
   console.log(`   Mensagens: ${msgCreated}`);
+  console.log(`   Produtos:  ${PRODUCTS.length}`);
   console.log(`\n🚀 Abra http://localhost:3000/dashboard\n`);
 }
 

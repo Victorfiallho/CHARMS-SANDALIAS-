@@ -120,7 +120,7 @@ export default function NovoContatoModal({ onClose, onCreated }: Props) {
             placeholder="Ex: Maria Silva"
             autoFocus
             style={inputStyle}
-            onFocus={(e) => { e.target.style.borderColor = "#6B7280"; }}
+            onFocus={(e) => { e.target.style.borderColor = "#C38B90"; }}
             onBlur={(e) => { e.target.style.borderColor = "#D1D5DB"; }}
           />
         </div>
@@ -135,7 +135,7 @@ export default function NovoContatoModal({ onClose, onCreated }: Props) {
                 border: "none",
                 borderRight: i === 0 ? "1px solid #E5E7EB" : "none",
                 cursor: "pointer",
-                background: canal === c ? "#111827" : "white",
+                background: canal === c ? "#C38B90" : "white",
                 fontFamily: "inherit", fontSize: "0.75rem", fontWeight: 600,
                 color: canal === c ? "white" : "#6B7280",
                 transition: "all 0.1s",

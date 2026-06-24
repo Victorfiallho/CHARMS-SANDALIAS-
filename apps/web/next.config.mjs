@@ -1,3 +1,8 @@
+import { fileURLToPath } from "url";
+import path from "path";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -8,10 +13,12 @@ const nextConfig = {
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
   },
   experimental: {
-    // TTL 0: toda navegação busca RSC payload fresco do servidor.
-    // Garante que Pipeline, Contatos e Relatórios sempre refletem o mesmo
-    // estado do banco — evita dessincronia entre módulos com cache stale.
     staleTimes: { dynamic: 0 },
+  },
+  webpack: (config) => {
+    // Garante que @/ resolve para apps/web/ independente do CWD do build
+    config.resolve.alias["@"] = __dirname;
+    return config;
   },
 };
 

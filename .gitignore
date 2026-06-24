@@ -18,6 +18,5 @@ yarn-debug.log*
 yarn-error.log*
 .pnp.*
 .vscode-test
-**/package-lock.json
 **/pnpm-lock.yaml
 **/yarn.lock

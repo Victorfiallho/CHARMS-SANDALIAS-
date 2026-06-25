@@ -9,7 +9,6 @@ out
 dist
 coverage
 *.tsbuildinfo
-# Artefatos de compilação TS que caem na pasta source
 apps/worker/src/*.js
 apps/worker/src/*.js.map
 packages/*/src/*.js

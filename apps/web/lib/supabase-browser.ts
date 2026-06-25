@@ -1,10 +1,9 @@
-import { createClient } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
 
-// Usa a anon key — seguro no browser, limitado pelo RLS
-const url  = process.env.NEXT_PUBLIC_SUPABASE_URL  ?? "";
-const key  = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
 
-export const supabaseBrowser = createClient(url, key, {
-  auth: { persistSession: false },
+// Singleton — createBrowserClient persiste sessão via cookie (necessário para auth)
+export const supabaseBrowser = createBrowserClient(url, key, {
   realtime: { params: { eventsPerSecond: 10 } },
 });

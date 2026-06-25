@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { supabaseBrowser } from "@/lib/supabase-browser";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,13 +15,17 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 800));
-    if (email && password) {
-      router.push("/dashboard");
-    } else {
-      setError("Preencha e-mail e senha.");
+
+    const { error: authError } = await supabaseBrowser.auth.signInWithPassword({ email, password });
+
+    if (authError) {
+      setError("E-mail ou senha inválidos.");
       setLoading(false);
+      return;
     }
+
+    router.push("/dashboard");
+    router.refresh();
   }
 
   return (

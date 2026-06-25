@@ -2,19 +2,9 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { STAGES } from "@/lib/constants";
-
-type Contact = {
-  id: string;
-  nome: string;
-  telefone: string | null;
-  instagram_id: string | null;
-  origem: string;
-  status: string;
-  tags: string[];
-  created_at?: string;
-  last_seen_at: string | null;
-  stageColor?: string;
-};
+import { Initials } from "@/components/Avatar";
+import { supabaseBrowser } from "@/lib/supabase-browser";
+import type { Contact } from "@/types/contact";
 
 type Message = {
   id: string;
@@ -80,13 +70,29 @@ export default function ConversationView({ contact, onClose, onUpdate }: Props) 
     setLoading(false);
   }, [contact.id]);
 
+  // Carga inicial ao abrir/trocar contato
   useEffect(() => {
     setLoading(true);
     setMessages([]);
     fetchMessages();
-    const id = setInterval(fetchMessages, 5000);
-    return () => clearInterval(id);
   }, [fetchMessages]);
+
+  // Realtime — novas mensagens chegam sem polling
+  useEffect(() => {
+    const channel = supabaseBrowser
+      .channel(`messages:${contact.id}`)
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "messages", filter: `contact_id=eq.${contact.id}` },
+        (payload) => {
+          const msg = payload.new as Message;
+          setMessages((prev) => prev.some((m) => m.id === msg.id) ? prev : [...prev, msg]);
+        }
+      )
+      .subscribe();
+
+    return () => { supabaseBrowser.removeChannel(channel); };
+  }, [contact.id]);
 
   useEffect(() => {
     if (activeTab === "conversa") {
@@ -167,8 +173,6 @@ export default function ConversationView({ contact, onClose, onUpdate }: Props) 
   const canalColor = contact.origem === "whatsapp" ? "#15803D" : "#9D174D";
   const canalLabel = contact.origem === "whatsapp" ? "WhatsApp" : "Instagram";
   const accentColor = contact.stageColor ?? "#9E8E8A";
-  const initials = contact.nome.trim().split(/\s+/).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
-  const hue = (contact.nome.charCodeAt(0) * 47 + contact.nome.charCodeAt(contact.nome.length - 1) * 23) % 360;
   const visibleTags = (contact.tags ?? []).filter((t) => t !== "demo");
 
   return (
@@ -183,14 +187,7 @@ export default function ConversationView({ contact, onClose, onUpdate }: Props) 
         display: "flex", alignItems: "center", gap: "0.75rem",
         flexShrink: 0, borderTop: `3px solid ${accentColor}`,
       }}>
-        <div style={{
-          width: 32, height: 32, borderRadius: 4,
-          background: "#FDF0F1",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: "0.7rem", fontWeight: 500, color: "#C38B90", flexShrink: 0, letterSpacing: "-0.5px",
-        }}>
-          {initials}
-        </div>
+        <Initials nome={contact.nome} size={32} />
 
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontWeight: 600, fontSize: "0.9rem", color: "#0f172a" }}>{contact.nome}</div>
@@ -385,7 +382,7 @@ export default function ConversationView({ contact, onClose, onUpdate }: Props) 
               </button>
             </div>
             <p style={{ margin: "0.3rem 0 0", fontSize: "0.65rem", color: "#9ca3af" }}>
-              Shift+Enter para nova linha · atualiza a cada 5s
+              Shift+Enter para nova linha · mensagens em tempo real
             </p>
           </div>
         </>

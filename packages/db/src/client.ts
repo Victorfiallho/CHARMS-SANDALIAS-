@@ -172,7 +172,7 @@ export async function insertMessage(options: {
         timestamp,
         external_id: externalId,
       } as MessageRecord,
-      { onConflict: "external_id" }
+      { onConflict: "external_id,canal" }
     )
     .select("*")
     .single();

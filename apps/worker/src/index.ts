@@ -1,5 +1,6 @@
+import crypto from "node:crypto";
 import dotenv from "dotenv";
-import Fastify from "fastify";
+import Fastify, { type FastifyRequest } from "fastify";
 import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
 import { z } from "zod";
@@ -8,7 +9,27 @@ import { startProcessor } from "./processor";
 
 dotenv.config({ path: "../../.env.local" });
 
-const VERIFY_TOKEN = process.env.WEBHOOK_VERIFY_TOKEN ?? "charms-verify-token";
+const VERIFY_TOKEN  = process.env.WEBHOOK_VERIFY_TOKEN ?? "charms-verify-token";
+const META_APP_SECRET = process.env.META_APP_SECRET ?? "";
+
+// Valida assinatura HMAC-SHA256 que a Meta envia no header X-Hub-Signature-256
+function verifyMetaSignature(rawBody: string, signature: string | undefined): boolean {
+  if (!META_APP_SECRET) return true; // variável não configurada → pula validação (dev)
+  if (!signature) return false;
+  const expected = `sha256=${crypto.createHmac("sha256", META_APP_SECRET).update(rawBody, "utf-8").digest("hex")}`;
+  try {
+    return crypto.timingSafeEqual(Buffer.from(expected, "utf-8"), Buffer.from(signature, "utf-8"));
+  } catch {
+    return false;
+  }
+}
+
+// Extende FastifyRequest para incluir rawBody capturado pelo content-type parser
+declare module "fastify" {
+  interface FastifyRequest {
+    rawBody?: string;
+  }
+}
 
 // ── Zod schemas (validação de entrada) ────────────────────────────
 const whatsappWebhookSchema = z.object({
@@ -71,6 +92,18 @@ type HubQuery = {
 // ── Bootstrap ─────────────────────────────────────────────────────
 const start = async () => {
   const app = Fastify({ logger: true });
+
+  // Captura raw body antes do parse JSON — necessário para validar assinatura Meta
+  app.addContentTypeParser("application/json", { parseAs: "string" }, (req, body, done) => {
+    (req as FastifyRequest).rawBody = body as string;
+    try {
+      done(null, JSON.parse(body as string));
+    } catch (err: unknown) {
+      const e = err as Error & { statusCode?: number };
+      e.statusCode = 400;
+      done(e, undefined);
+    }
+  });
 
   // ── Swagger / OpenAPI ──────────────────────────────────────────
   await app.register(swagger, {
@@ -215,6 +248,12 @@ const start = async () => {
       },
     },
     async (request, reply) => {
+      const sig = request.headers["x-hub-signature-256"] as string | undefined;
+      if (!verifyMetaSignature(request.rawBody ?? "", sig)) {
+        request.log.warn("whatsapp webhook: assinatura inválida");
+        return reply.status(403).send({ error: "Invalid signature" });
+      }
+
       const parsed = whatsappWebhookSchema.safeParse(request.body);
       if (!parsed.success) {
         request.log.warn({ err: parsed.error }, "whatsapp payload inválido");
@@ -258,6 +297,12 @@ const start = async () => {
       },
     },
     async (request, reply) => {
+      const sig = request.headers["x-hub-signature-256"] as string | undefined;
+      if (!verifyMetaSignature(request.rawBody ?? "", sig)) {
+        request.log.warn("instagram webhook: assinatura inválida");
+        return reply.status(403).send({ error: "Invalid signature" });
+      }
+
       const parsed = instagramWebhookSchema.safeParse(request.body);
       if (!parsed.success) {
         request.log.warn({ err: parsed.error }, "instagram payload inválido");

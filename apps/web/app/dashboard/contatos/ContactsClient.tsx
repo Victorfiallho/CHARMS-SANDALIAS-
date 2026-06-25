@@ -8,34 +8,8 @@ import { fmtPhone, timeAgo } from "@/lib/utils";
 import ConversationView from "../components/ConversationView";
 import NovoContatoModal from "../components/NovoContatoModal";
 import Toast from "../components/Toast";
-
-type Contact = {
-  id: string;
-  nome: string;
-  telefone: string | null;
-  instagram_id: string | null;
-  origem: string;
-  status: string;
-  tags: string[];
-  created_at?: string;
-  last_seen_at: string | null;
-};
-
-function Initials({ nome }: { nome: string }) {
-  const words = nome.trim().split(/\s+/);
-  const initials = (words[0]?.[0] ?? "") + (words[1]?.[0] ?? "");
-  return (
-    <div style={{
-      width: 26, height: 26, borderRadius: 4,
-      background: "#FDF0F1",
-      color: "#C38B90", fontWeight: 500, fontSize: "0.6rem",
-      display: "flex", alignItems: "center", justifyContent: "center",
-      flexShrink: 0, letterSpacing: "-0.5px",
-    }}>
-      {initials.toUpperCase()}
-    </div>
-  );
-}
+import { Initials } from "@/components/Avatar";
+import type { Contact } from "@/types/contact";
 
 type Props = { contacts: Contact[] };
 

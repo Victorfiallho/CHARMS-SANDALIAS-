@@ -8,35 +8,9 @@ import { fmtPhone, timeAgo } from "@/lib/utils";
 import ConversationView from "./ConversationView";
 import NovoContatoModal from "./NovoContatoModal";
 import Toast from "./Toast";
-
-type Contact = {
-  id: string;
-  nome: string;
-  telefone: string | null;
-  instagram_id: string | null;
-  origem: string;
-  status: string;
-  tags: string[];
-  last_seen_at: string | null;
-};
+import type { Contact } from "@/types/contact";
 
 type Props = { contacts: Contact[] };
-
-function Avatar({ nome, size = 34 }: { nome: string; size?: number }) {
-  const words = nome.trim().split(/\s+/);
-  const initials = (words[0]?.[0] ?? "") + (words[1]?.[0] ?? "");
-  return (
-    <div style={{
-      width: size, height: size, borderRadius: "50%",
-      background: "#FDF0F1",
-      color: "#C38B90", fontWeight: 500, fontSize: size * 0.35,
-      display: "flex", alignItems: "center", justifyContent: "center",
-      flexShrink: 0, letterSpacing: "-0.5px",
-    }}>
-      {initials.toUpperCase()}
-    </div>
-  );
-}
 
 function ChannelDot({ origem }: { origem: string }) {
   const isWpp = origem === "whatsapp";

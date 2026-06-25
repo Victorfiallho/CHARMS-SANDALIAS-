@@ -6,18 +6,8 @@ import { useRealtimeContacts } from "@/hooks/useRealtimeContacts";
 import ConversationView from "../components/ConversationView";
 import { STATUS_COLOR, STATUS_LABEL } from "@/lib/constants";
 import { timeAgo } from "@/lib/utils";
-
-type Contact = {
-  id: string;
-  nome: string;
-  telefone: string | null;
-  instagram_id: string | null;
-  origem: string;
-  status: string;
-  tags: string[];
-  created_at?: string;
-  last_seen_at: string | null;
-};
+import { InitialsColored as Initials } from "@/components/Avatar";
+import type { Contact } from "@/types/contact";
 
 type LastMsg = {
   contact_id: string;
@@ -30,23 +20,6 @@ type Props = {
   contacts: Contact[];
   lastMessages: LastMsg[];
 };
-
-function Initials({ nome }: { nome: string }) {
-  const words = nome.trim().split(/\s+/);
-  const initials = (words[0]?.[0] ?? "") + (words[1]?.[0] ?? "");
-  const hue = (nome.charCodeAt(0) * 47 + nome.charCodeAt(nome.length - 1) * 23) % 360;
-  return (
-    <div style={{
-      width: 32, height: 32, borderRadius: 4, flexShrink: 0,
-      background: `hsl(${hue},40%,45%)`,
-      color: "white", fontWeight: 700, fontSize: "0.65rem",
-      display: "flex", alignItems: "center", justifyContent: "center",
-      letterSpacing: "-0.5px",
-    }}>
-      {initials.toUpperCase()}
-    </div>
-  );
-}
 
 const CANAL_TABS = ["Todos", "WhatsApp", "Instagram"] as const;
 

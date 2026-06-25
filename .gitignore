@@ -2,7 +2,8 @@ node_modules
 .DS_Store
 .env*
 !.env.example
-.vscode
+.vscode/*
+!.vscode/settings.json
 .next
 out
 dist
@@ -20,3 +21,4 @@ yarn-error.log*
 .vscode-test
 **/pnpm-lock.yaml
 **/yarn.lock
+.vercel

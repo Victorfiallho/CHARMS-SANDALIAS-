@@ -244,7 +244,10 @@ const start = async () => {
       schema: {
         tags: ["Webhooks"],
         summary: "Recebe evento WhatsApp Cloud API — enfileira no BullMQ e responde 200",
-        response: { 200: { type: "object", properties: { received: { type: "boolean" } } } },
+        response: {
+          200: { type: "object", properties: { received: { type: "boolean" } } },
+          403: { type: "object", properties: { error: { type: "string" } } },
+        },
       },
     },
     async (request, reply) => {
@@ -293,7 +296,10 @@ const start = async () => {
       schema: {
         tags: ["Webhooks"],
         summary: "Recebe evento Instagram Graph API — enfileira no BullMQ e responde 200",
-        response: { 200: { type: "object", properties: { received: { type: "boolean" } } } },
+        response: {
+          200: { type: "object", properties: { received: { type: "boolean" } } },
+          403: { type: "object", properties: { error: { type: "string" } } },
+        },
       },
     },
     async (request, reply) => {

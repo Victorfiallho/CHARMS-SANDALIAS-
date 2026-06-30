@@ -3,10 +3,13 @@ import { Queue } from "bullmq";
 // Passa plain object — evita conflito de tipos entre ioredis externo e o bundled do BullMQ
 function parseRedisUrl(url: string) {
   const parsed = new URL(url);
+  const tls = parsed.protocol === "rediss:";
   return {
     host: parsed.hostname,
-    port: Number(parsed.port || 6379),
+    port: Number(parsed.port || (tls ? 6380 : 6379)),
+    ...(parsed.username ? { username: parsed.username } : {}),
     ...(parsed.password ? { password: decodeURIComponent(parsed.password) } : {}),
+    ...(tls ? { tls: {} } : {}),
     maxRetriesPerRequest: null as null,
   };
 }
